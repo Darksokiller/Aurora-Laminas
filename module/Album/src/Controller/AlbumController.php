@@ -9,9 +9,9 @@ class AlbumController extends AbstractActionController
 {
     public function indexAction()
     {
-        $layout = new Layout();
+        //$layout = new Layout();
         
-        var_dump($layout);
+        //var_dump($this->layout());
     }
     
     public function addAction()
