@@ -38,10 +38,32 @@ class AlbumController extends AbstractActionController
     
     public function addAction()
     {
+        $data = array('id' => 0,
+                      'title' => 'Love the way you lie',
+                      'artist' => 'Eminem'
+        );
+        //var_dump($data);
+        $post = new Album([]);
+        $post->id = $data['id'];
+        $post->artist = $data['artist'];
+        $post->title = $data['title'];
+        var_dump($post);
+        $this->table->saveAlbum($post);
     }
     
     public function editAction()
     {
+        $data = array('id' => 0,
+            'title' => 'Love the way you lie',
+            'artist' => 'Eminemmmmm'
+        );
+        //var_dump($data);
+        $post = new Album([]);
+        $post->id = 3;
+        $post->artist = $data['artist'];
+        $post->title = $data['title'];
+        var_dump($post);
+        $this->table->saveAlbum($post);
     }
     
     public function deleteAction()
