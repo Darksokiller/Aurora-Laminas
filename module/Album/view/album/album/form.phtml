@@ -8,23 +8,26 @@ $form->prepare();
 // echo $this->formRow($form->get('artist'));
 // echo $this->formSubmit($form->get('submit'));
 // echo $this->form()->closeTag();
-
+$this->headLink()->prependStylesheet($this->basePath('css/aurora.css'));
 // This provides a default CSS class and placeholder text for the title element:
 $album = $form->get('title');
 $album->setAttribute('class', 'form-control');
 $album->setAttribute('placeholder', 'Album title');
+//$album->setAttribute('size', '100');
+$album->setAttribute('maxlength', '100');
 
 // This provides a default CSS class and placeholder text for the artist element:
 $artist = $form->get('artist');
 $artist->setAttribute('class', 'form-control');
 $artist->setAttribute('placeholder', 'Artist');
+$artist->setAttribute('maxlength', '100');
 
 // This provides CSS classes for the submit button:
 $submit = $form->get('submit');
 $submit->setAttribute('class', 'btn btn-primary');
 
-$form->setAttribute('action', $this->url('album', ['action' => 'add']));
-$form->prepare();
+// $form->setAttribute('action', $this->url('album', ['action' => 'add']));
+// $form->prepare();
 
 echo $this->form()->openTag($form);
 ?>
