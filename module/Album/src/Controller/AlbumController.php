@@ -6,6 +6,8 @@ use Laminas\View\Model\ViewModel;
 use Laminas\Mvc\Controller\Plugin\Layout;
 use Album\Model\AlbumTable;
 use Album\Model\Album;
+use Album\Form\AlbumForm;
+
 
 class AlbumController extends AbstractActionController
 {
@@ -22,48 +24,58 @@ class AlbumController extends AbstractActionController
         //$layout = new Layout();
         //$view = new ViewModel();
         
+        $form = new AlbumForm();
+        $form->get('submit')->setValue('Add');
+        
             $view = new ViewModel([
                 'albums' => $this->table->fetchAll(),
             ]);
         
-       
-            $data = array('key' => 'value', 'key_two' => 'value two');
-            $child = new ViewModel(['data' => $data]);
-            $child->setTemplate('Album/Album/custom');
+            $child = new ViewModel(['form' => $form]);
+            $child->setTemplate('Album/Album/form');
             
-            $view->addChild($child, 'child_template');
+            $view->addChild($child, 'form_template');
            // var_dump($view);
             return $view;
     }
     
     public function addAction()
     {
-        $data = array('id' => 0,
-                      'title' => 'Love the way you lie',
-                      'artist' => 'Eminem'
-        );
+        
         //var_dump($data);
-        $post = new Album([]);
-        $post->id = $data['id'];
-        $post->artist = $data['artist'];
-        $post->title = $data['title'];
-        var_dump($post);
-        $this->table->saveAlbum($post);
+//         $post = new Album([]);
+//         $post->id = $data['id'];
+//         $post->artist = $data['artist'];
+//         $post->title = $data['title'];
+//         var_dump($post);
+//         $this->table->saveAlbum($post);
+
+        $form = new AlbumForm();
+        $form->get('submit')->setValue('Add');
+        
+        $request = $this->getRequest();
+        
+        if (! $request->isPost()) {
+            return ['form' => $form];
+        }
+        
+        $album = new Album();
+        $form->setInputFilter($album->getInputFilter());
+        $form->setData($request->getPost());
+        
+        if (! $form->isValid()) {
+            return ['form' => $form];
+        }
+        
+        $album->exchangeArray($form->getData());
+        $this->table->saveAlbum($album);
+        return $this->redirect()->toRoute('album');
+        
     }
     
     public function editAction()
     {
-        $data = array('id' => 0,
-            'title' => 'Love the way you lie',
-            'artist' => 'Eminemmmmm'
-        );
-        //var_dump($data);
-        $post = new Album([]);
-        $post->id = 3;
-        $post->artist = $data['artist'];
-        $post->title = $data['title'];
-        var_dump($post);
-        $this->table->saveAlbum($post);
+
     }
     
     public function deleteAction()
