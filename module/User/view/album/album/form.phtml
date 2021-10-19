@@ -1,5 +1,5 @@
 <?php
-$form->setAttribute('action', $this->url('album', ['action' => 'add']));
+$form->setAttribute('action', $this->url('User', ['action' => 'add']));
 $form->prepare();
 
 // echo $this->form()->openTag($form);
@@ -10,11 +10,11 @@ $form->prepare();
 // echo $this->form()->closeTag();
 $this->headLink()->prependStylesheet($this->basePath('css/aurora.css'));
 // This provides a default CSS class and placeholder text for the title element:
-$album = $form->get('title');
-$album->setAttribute('class', 'form-control');
-$album->setAttribute('placeholder', 'Album title');
-//$album->setAttribute('size', '100');
-$album->setAttribute('maxlength', '100');
+$User = $form->get('title');
+$User->setAttribute('class', 'form-control');
+$User->setAttribute('placeholder', 'User title');
+//$User->setAttribute('size', '100');
+$User->setAttribute('maxlength', '100');
 
 // This provides a default CSS class and placeholder text for the artist element:
 $artist = $form->get('artist');
@@ -26,7 +26,7 @@ $artist->setAttribute('maxlength', '100');
 $submit = $form->get('submit');
 $submit->setAttribute('class', 'btn btn-primary');
 
-// $form->setAttribute('action', $this->url('album', ['action' => 'add']));
+// $form->setAttribute('action', $this->url('User', ['action' => 'add']));
 // $form->prepare();
 
 echo $this->form()->openTag($form);
@@ -34,9 +34,9 @@ echo $this->form()->openTag($form);
 <?php // Wrap the elements in divs marked as form groups, and render the
       // label, element, and errors separately within ?>
 <div class="form-group">
-    <?= $this->formLabel($album) ?>
-    <?= $this->formElement($album) ?>
-    <?= $this->formElementErrors()->render($album, ['class' => 'help-block']) ?>
+    <?= $this->formLabel($User) ?>
+    <?= $this->formElement($User) ?>
+    <?= $this->formElementErrors()->render($User, ['class' => 'help-block']) ?>
 </div>
 
 <div class="form-group">

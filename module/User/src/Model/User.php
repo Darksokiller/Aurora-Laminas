@@ -1,5 +1,5 @@
 <?php
-namespace Album\Model;
+namespace User\Model;
 use DomainException;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
@@ -8,7 +8,7 @@ use Laminas\InputFilter\InputFilter;
 use Laminas\InputFilter\InputFilterAwareInterface;
 use Laminas\InputFilter\InputFilterInterface;
 use Laminas\Validator\StringLength;
-class Album
+class User
 {
     public $id;
     public $artist;
@@ -19,16 +19,18 @@ class Album
     public function exchangeArray(array $data)
     {
         $this->id     = !empty($data['id']) ? $data['id'] : null;
-        $this->artist = !empty($data['artist']) ? $data['artist'] : null;
-        $this->title  = !empty($data['title']) ? $data['title'] : null;
+        $this->name = !empty($data['name']) ? $data['name'] : null;
+        $this->email = !empty($data['email']) ? $data['email'] : null;
+        $this->password  = !empty($data['password']) ? $data['password'] : null;
     }
     // Add the following method:
     public function getArrayCopy()
     {
         return [
             'id'     => $this->id,
-            'artist' => $this->artist,
-            'title'  => $this->title,
+            'name' => $this->name,
+            'email' => $this->email,
+            'password'  => $this->password,
         ];
     }
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -56,7 +58,7 @@ class Album
         ]);
         
         $inputFilter->add([
-            'name' => 'artist',
+            'name' => 'name',
             'required' => true,
             'filters' => [
                 ['name' => StripTags::class],
@@ -75,7 +77,26 @@ class Album
         ]);
         
         $inputFilter->add([
-            'name' => 'title',
+            'name' => 'email',
+            'required' => true,
+            'filters' => [
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
+            ],
+            'validators' => [
+                [
+                    'name' => StringLength::class,
+                    'options' => [
+                        'encoding' => 'UTF-8',
+                        'min' => 1,
+                        'max' => 100,
+                    ],
+                ],
+            ],
+        ]);
+        
+        $inputFilter->add([
+            'name' => 'password',
             'required' => true,
             'filters' => [
                 ['name' => StripTags::class],

@@ -1,15 +1,15 @@
 <?php
-namespace Album\Form;
+namespace User\Form;
 
 use Laminas\Form\Form;
 
-class AlbumForm extends Form
+class UserForm extends Form
 {
 
     public function __construct($name = null)
     {
         // We will ignore the name provided to the constructor
-        parent::__construct('album');
+        parent::__construct('User');
         
         $this->add([
             'name' => 'id',

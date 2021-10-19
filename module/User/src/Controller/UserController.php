@@ -1,21 +1,21 @@
 <?php
-namespace Album\Controller;
+namespace User\Controller;
 
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 use Laminas\Mvc\Controller\Plugin\Layout;
-use Album\Model\AlbumTable;
-use Album\Model\Album;
-use Album\Form\AlbumForm;
+use User\Model\UserTable;
+use User\Model\User;
+use User\Form\UserForm;
 
 
-class AlbumController extends AbstractActionController
+class UserController extends AbstractActionController
 {
     // Add this property:
     private $table;
     
     // Add this constructor:
-    public function __construct(AlbumTable $table)
+    public function __construct(UserTable $table)
     {
         $this->table = $table;
     }
@@ -24,15 +24,15 @@ class AlbumController extends AbstractActionController
         //$layout = new Layout();
         //$view = new ViewModel();
         
-        $form = new AlbumForm();
+        $form = new UserForm();
         $form->get('submit')->setValue('Add');
         
             $view = new ViewModel([
-                'albums' => $this->table->fetchAll(),
+                'Users' => $this->table->fetchAll(),
             ]);
         
             $child = new ViewModel(['form' => $form]);
-            $child->setTemplate('Album/Album/form');
+            $child->setTemplate('User/User/form');
             
             $view->addChild($child, 'form_template');
            // var_dump($view);
@@ -43,14 +43,14 @@ class AlbumController extends AbstractActionController
     {
         
         //var_dump($data);
-//         $post = new Album([]);
+//         $post = new User([]);
 //         $post->id = $data['id'];
 //         $post->artist = $data['artist'];
 //         $post->title = $data['title'];
 //         var_dump($post);
-//         $this->table->saveAlbum($post);
+//         $this->table->saveUser($post);
 
-        $form = new AlbumForm();
+        $form = new UserForm();
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
@@ -59,17 +59,17 @@ class AlbumController extends AbstractActionController
             return ['form' => $form];
         }
         
-        $album = new Album();
-        $form->setInputFilter($album->getInputFilter());
+        $User = new User();
+        $form->setInputFilter($User->getInputFilter());
         $form->setData($request->getPost());
         
         if (! $form->isValid()) {
             return ['form' => $form];
         }
         
-        $album->exchangeArray($form->getData());
-        $this->table->saveAlbum($album);
-        return $this->redirect()->toRoute('album');
+        $User->exchangeArray($form->getData());
+        $this->table->saveUser($User);
+        return $this->redirect()->toRoute('User');
         
     }
     
@@ -78,20 +78,20 @@ class AlbumController extends AbstractActionController
         $id = (int) $this->params()->fromRoute('id', 0);
         
         if (0 === $id) {
-            return $this->redirect()->toRoute('album', ['action' => 'add']);
+            return $this->redirect()->toRoute('User', ['action' => 'add']);
         }
         
-        // Retrieve the album with the specified id. Doing so raises
-        // an exception if the album is not found, which should result
+        // Retrieve the User with the specified id. Doing so raises
+        // an exception if the User is not found, which should result
         // in redirecting to the landing page.
         try {
-            $album = $this->table->getAlbum($id);
+            $User = $this->table->getUser($id);
         } catch (\Exception $e) {
-            return $this->redirect()->toRoute('album', ['action' => 'index']);
+            return $this->redirect()->toRoute('User', ['action' => 'index']);
         }
         
-        $form = new AlbumForm();
-        $form->bind($album);
+        $form = new UserForm();
+        $form->bind($User);
         $form->get('submit')->setAttribute('value', 'Edit');
         
         $request = $this->getRequest();
@@ -101,7 +101,7 @@ class AlbumController extends AbstractActionController
             return $viewData;
         }
         
-        $form->setInputFilter($album->getInputFilter());
+        $form->setInputFilter($User->getInputFilter());
         $form->setData($request->getPost());
         
         if (! $form->isValid()) {
@@ -109,12 +109,12 @@ class AlbumController extends AbstractActionController
         }
         
         try {
-            $this->table->saveAlbum($album);
+            $this->table->saveUser($User);
         } catch (\Exception $e) {
         }
         
-        // Redirect to album list
-        return $this->redirect()->toRoute('album', ['action' => 'index']);
+        // Redirect to User list
+        return $this->redirect()->toRoute('User', ['action' => 'index']);
     }
     
     public function deleteAction()

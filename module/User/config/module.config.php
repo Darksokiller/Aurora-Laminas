@@ -1,5 +1,5 @@
 <?php
-namespace Album;
+namespace User;
 
 use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
@@ -9,16 +9,16 @@ return [
     // The following section is new and should be added to your file:
     'router' => [
         'routes' => [
-            'album' => [
+            'User' => [
                 'type'    => Segment::class,
                 'options' => [
-                    'route' => '/album[/:action[/:id]]',
+                    'route' => '/User[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id'     => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\AlbumController::class,
+                        'controller' => Controller\UserController::class,
                         'action'     => 'index',
                     ],
                 ],
@@ -28,7 +28,7 @@ return [
     
     'view_manager' => [
         'template_path_stack' => [
-            'album' => __DIR__ . '/../view',
+            'User' => __DIR__ . '/../view',
         ],
     ],
 ];

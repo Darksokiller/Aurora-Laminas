@@ -1,12 +1,12 @@
 <?php
-// module/Album/view/album/album/index.phtml:
+// module/User/view/User/User/index.phtml:
 
-$title = 'My albums';
+$title = 'My Users';
 $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <p>
-    <span>Add new album</span>
+    <span>Add new User</span>
 </p>
 
 <table class="table">
@@ -15,13 +15,13 @@ $this->headTitle($title);
     <th>Artist</th>
     <th>&nbsp;</th>
 </tr>
-<?php foreach ($albums as $album) : ?>
+<?php foreach ($Users as $User) : ?>
     <tr>
-        <td><?= $this->escapeHtml($album->title) ?></td>
-        <td><?= $this->escapeHtml($album->artist) ?></td>
+        <td><?= $this->escapeHtml($User->title) ?></td>
+        <td><?= $this->escapeHtml($User->artist) ?></td>
         <td>
-            <a href="<?= $this->url('album', ['action' => 'edit', 'id' => $album->id]) ?>">Edit</a>
-            <a href="<?= $this->url('album', ['action' => 'delete', 'id' => $album->id]) ?>">Delete</a>
+            <a href="<?= $this->url('User', ['action' => 'edit', 'id' => $User->id]) ?>">Edit</a>
+            <a href="<?= $this->url('User', ['action' => 'delete', 'id' => $User->id]) ?>">Delete</a>
         </td>
     </tr>
 <?php endforeach; ?>

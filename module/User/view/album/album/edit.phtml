@@ -1,14 +1,14 @@
 <?php 
 $this->headLink()->prependStylesheet($this->basePath('css/aurora.css'));
-$title = 'Edit album';
+$title = 'Edit User';
 $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <?php
-$album = $form->get('title');
-$album->setAttribute('class', 'form-control');
-$album->setAttribute('placeholder', 'Album title');
-$album->setAttribute('maxlength', '100');
+$User = $form->get('title');
+$User->setAttribute('class', 'form-control');
+$User->setAttribute('placeholder', 'User title');
+$User->setAttribute('maxlength', '100');
 
 $artist = $form->get('artist');
 $artist->setAttribute('class', 'form-control');
@@ -19,7 +19,7 @@ $artist->setAttribute('maxlength', '100');
 $submit = $form->get('submit');
 $submit->setAttribute('class', 'btn btn-primary');
 
-$form->setAttribute('action', $this->url('album', [
+$form->setAttribute('action', $this->url('User', [
     'action' => 'edit',
     'id'     => $id,
 ]));
@@ -28,9 +28,9 @@ $form->prepare();
 echo $this->form()->openTag($form);
 ?>
 <div class="form-group">
-    <?= $this->formLabel($album) ?>
-    <?= $this->formElement($album) ?>
-    <?= $this->formElementErrors()->render($album, ['class' => 'help-block']) ?>
+    <?= $this->formLabel($User) ?>
+    <?= $this->formElement($User) ?>
+    <?= $this->formElementErrors()->render($User, ['class' => 'help-block']) ?>
 </div>
 
 <div class="form-group">

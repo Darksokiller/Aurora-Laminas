@@ -1,10 +1,10 @@
 <?php
-namespace Album\Model;
+namespace User\Model;
 
 use RuntimeException;
 use Laminas\Db\TableGateway\TableGatewayInterface;
 
-class AlbumTable
+class UserTable
 {
     private $tableGateway;
     
@@ -18,7 +18,7 @@ class AlbumTable
         return $this->tableGateway->select();
     }
     
-    public function getAlbum($id)
+    public function getUser($id)
     {
         $id = (int) $id;
         $rowset = $this->tableGateway->select(['id' => $id]);
@@ -33,14 +33,15 @@ class AlbumTable
         return $row;
     }
     
-    public function saveAlbum(Album $album)
+    public function saveUser(User $user)
     {
         $data = [
-            'artist' => $album->artist,
-            'title'  => $album->title,
+            'name' => $user->name,
+            'email' => $user->email,
+            'password'  => $user->password,
         ];
         
-        $id = (int) $album->id;
+        $id = (int) $user->id;
         
         if ($id === 0) {
             $this->tableGateway->insert($data);
@@ -48,10 +49,10 @@ class AlbumTable
         }
         
         try {
-            $this->getAlbum($id);
+            $this->getUser($id);
         } catch (RuntimeException $e) {
             throw new RuntimeException(sprintf(
-                'Cannot update album with identifier %d; does not exist',
+                'Cannot update User with identifier %d; does not exist',
                 $id
                 ));
         }
@@ -59,7 +60,7 @@ class AlbumTable
         $this->tableGateway->update($data, ['id' => $id]);
     }
     
-    public function deleteAlbum($id)
+    public function deleteUser($id)
     {
         $this->tableGateway->delete(['id' => (int) $id]);
     }
