@@ -16,17 +16,35 @@ class UserForm extends Form
             'type' => 'hidden'
         ]);
         $this->add([
-            'name' => 'title',
+            'name' => 'regDate',
+            'type' => 'hidden'
+        ]);
+        $this->add([
+            'name' => 'name',
             'type' => 'text',
             'options' => [
-                'label' => 'Title'
+                'label' => 'User Name'
             ]
         ]);
         $this->add([
-            'name' => 'artist',
+            'name' => 'email',
             'type' => 'text',
             'options' => [
-                'label' => 'Artist'
+                'label' => 'Email'
+            ]
+        ]);
+        $this->add([
+            'name' => 'password',
+            'type' => 'password',
+            'options' => [
+                'label' => 'Password'
+            ]
+        ]);
+        $this->add([
+            'name' => 'conf_password',
+            'type' => 'password',
+            'options' => [
+                'label' => 'Confirm Password'
             ]
         ]);
         $this->add([

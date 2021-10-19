@@ -43,6 +43,7 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         '78d47739fff607f33066e6259f091845' => __DIR__ . '/..' . '/laminas/laminas-cache/autoload/patternPluginManagerPolyfill.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
+        '0a80d26768cd24fcdbe75bdd719255c1' => __DIR__ . '/..' . '/firephp/firephp-core/lib/FirePHPCore/fb.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -54,6 +55,10 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
         array (
             'Webmozart\\Assert\\' => 17,
             'Webimpress\\SafeWriter\\' => 22,
+        ),
+        'U' => 
+        array (
+            'User\\' => 5,
         ),
         'S' => 
         array (
@@ -168,6 +173,14 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
         'Webimpress\\SafeWriter\\' => 
         array (
             0 => __DIR__ . '/..' . '/webimpress/safe-writer/src',
+        ),
+        'User\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/User/src',
+            1 => __DIR__ . '/../..' . '/module/User/src/Controller',
+            2 => __DIR__ . '/../..' . '/module/User/src/Filter',
+            3 => __DIR__ . '/../..' . '/module/User/src/Form',
+            4 => __DIR__ . '/../..' . '/module/User/src/Model',
         ),
         'Symfony\\Polyfill\\Php80\\' => 
         array (
@@ -485,6 +498,9 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'FB' => __DIR__ . '/..' . '/firephp/firephp-core/lib/FirePHPCore/fb.php',
+        'FirePHP' => __DIR__ . '/..' . '/firephp/firephp-core/lib/FirePHPCore/FirePHP.class.php',
+        'FirePHP_TestWrapper' => __DIR__ . '/..' . '/firephp/firephp-core/lib/FirePHPCore/FirePHP_TestWrapper.class.php',
         'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
         'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
         'PHPUnit\\Exception' => __DIR__ . '/..' . '/phpunit/phpunit/src/Exception.php',

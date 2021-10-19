@@ -8,6 +8,7 @@ use Laminas\InputFilter\InputFilter;
 use Laminas\InputFilter\InputFilterAwareInterface;
 use Laminas\InputFilter\InputFilterInterface;
 use Laminas\Validator\StringLength;
+use User\Filter\PasswordFilter;
 class User
 {
     public $id;
@@ -22,6 +23,9 @@ class User
         $this->name = !empty($data['name']) ? $data['name'] : null;
         $this->email = !empty($data['email']) ? $data['email'] : null;
         $this->password  = !empty($data['password']) ? $data['password'] : null;
+        $this->regDate = !empty($data['regDate']) ? $data['regDate'] : null;
+        $this->active = !empty($data['active']) ? $data['active'] : null;
+        $this->verified = !empty($data['verified']) ? $data['verified'] : null;
     }
     // Add the following method:
     public function getArrayCopy()
@@ -31,6 +35,9 @@ class User
             'name' => $this->name,
             'email' => $this->email,
             'password'  => $this->password,
+            'regDate' => $this->regDate,
+            'active' => $this->regDate,
+            'verified' => $this->verified,
         ];
     }
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -101,6 +108,7 @@ class User
             'filters' => [
                 ['name' => StripTags::class],
                 ['name' => StringTrim::class],
+                ['name' => PasswordFilter::class],
             ],
             'validators' => [
                 [

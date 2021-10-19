@@ -42,4 +42,5 @@ return array(
     'b6b991a57620e2fb6b2f66f03fe9ddc2' => $vendorDir . '/symfony/string/Resources/functions.php',
     '78d47739fff607f33066e6259f091845' => $vendorDir . '/laminas/laminas-cache/autoload/patternPluginManagerPolyfill.php',
     '6124b4c8570aa390c21fafd04a26c69f' => $vendorDir . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
+    '0a80d26768cd24fcdbe75bdd719255c1' => $vendorDir . '/firephp/firephp-core/lib/FirePHPCore/fb.php',
 );

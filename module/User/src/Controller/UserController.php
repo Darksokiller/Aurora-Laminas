@@ -4,6 +4,10 @@ namespace User\Controller;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 use Laminas\Mvc\Controller\Plugin\Layout;
+//use Laminas\Log\Formatter\FirePhp;
+use Laminas\Log\Formatter\FirePhp as Formatter;
+use Laminas\Log\Writer\FirePhp as Writer;
+use Laminas\Log\Logger;
 use User\Model\UserTable;
 use User\Model\User;
 use User\Form\UserForm;
@@ -21,8 +25,6 @@ class UserController extends AbstractActionController
     }
     public function indexAction()
     {
-        //$layout = new Layout();
-        //$view = new ViewModel();
         
         $form = new UserForm();
         $form->get('submit')->setValue('Add');
@@ -32,7 +34,7 @@ class UserController extends AbstractActionController
             ]);
         
             $child = new ViewModel(['form' => $form]);
-            $child->setTemplate('User/User/form');
+            $child->setTemplate('user/user/form');
             
             $view->addChild($child, 'form_template');
            // var_dump($view);
@@ -59,17 +61,17 @@ class UserController extends AbstractActionController
             return ['form' => $form];
         }
         
-        $User = new User();
-        $form->setInputFilter($User->getInputFilter());
+        $user = new User();
+        $form->setInputFilter($user->getInputFilter());
         $form->setData($request->getPost());
-        
+       // var_dump($form->getData());
         if (! $form->isValid()) {
             return ['form' => $form];
         }
         
-        $User->exchangeArray($form->getData());
-        $this->table->saveUser($User);
-        return $this->redirect()->toRoute('User');
+        $user->exchangeArray($form->getData());
+        $this->table->saveUser($user);
+        return $this->redirect()->toRoute('user');
         
     }
     
@@ -78,20 +80,20 @@ class UserController extends AbstractActionController
         $id = (int) $this->params()->fromRoute('id', 0);
         
         if (0 === $id) {
-            return $this->redirect()->toRoute('User', ['action' => 'add']);
+            return $this->redirect()->toRoute('user', ['action' => 'add']);
         }
         
         // Retrieve the User with the specified id. Doing so raises
         // an exception if the User is not found, which should result
         // in redirecting to the landing page.
         try {
-            $User = $this->table->getUser($id);
+            $user = $this->table->getUser($id);
         } catch (\Exception $e) {
-            return $this->redirect()->toRoute('User', ['action' => 'index']);
+            return $this->redirect()->toRoute('user', ['action' => 'index']);
         }
         
         $form = new UserForm();
-        $form->bind($User);
+        $form->bind($user);
         $form->get('submit')->setAttribute('value', 'Edit');
         
         $request = $this->getRequest();
@@ -101,7 +103,8 @@ class UserController extends AbstractActionController
             return $viewData;
         }
         
-        $form->setInputFilter($User->getInputFilter());
+        $form->setInputFilter($user->getInputFilter());
+        
         $form->setData($request->getPost());
         
         if (! $form->isValid()) {
@@ -109,12 +112,12 @@ class UserController extends AbstractActionController
         }
         
         try {
-            $this->table->saveUser($User);
+            $this->table->saveUser($user);
         } catch (\Exception $e) {
         }
         
         // Redirect to User list
-        return $this->redirect()->toRoute('User', ['action' => 'index']);
+        return $this->redirect()->toRoute('user', ['action' => 'index']);
     }
     
     public function deleteAction()

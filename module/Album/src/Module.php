@@ -5,6 +5,7 @@ use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\ModuleManager\Feature\ConfigProviderInterface;
+use Laminas\Filter\FilterProviderInterface;
 
 
 class Module implements ConfigProviderInterface
@@ -37,6 +38,18 @@ class Module implements ConfigProviderInterface
                 Controller\AlbumController::class => function($container) {
                     return new Controller\AlbumController(
                         $container->get(Model\AlbumTable::class)
+                        );
+                },
+                ],
+                ];
+    }
+    public function getFilterConfig()
+    {
+        return [
+            'factories' => [
+                Filter\PasswordFilter::class => function($container) {
+                    return new Filter\PasswordFilter(
+                        $container->get(Filter\PasswordFilter::class)
                         );
                 },
                 ],
