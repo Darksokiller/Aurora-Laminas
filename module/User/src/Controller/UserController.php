@@ -30,13 +30,10 @@ class UserController extends AbstractActionController
         $form->get('submit')->setValue('Add');
         
             $view = new ViewModel([
-                'Users' => $this->table->fetchAll(),
+                'users' => $this->table->fetchAll(),
             ]);
         
-            $child = new ViewModel(['form' => $form]);
-            $child->setTemplate('user/user/form');
             
-            $view->addChild($child, 'form_template');
            // var_dump($view);
             return $view;
     }
@@ -44,14 +41,6 @@ class UserController extends AbstractActionController
     public function addAction()
     {
         
-        //var_dump($data);
-//         $post = new User([]);
-//         $post->id = $data['id'];
-//         $post->artist = $data['artist'];
-//         $post->title = $data['title'];
-//         var_dump($post);
-//         $this->table->saveUser($post);
-
         $form = new UserForm();
         $form->get('submit')->setValue('Add');
         
@@ -60,7 +49,15 @@ class UserController extends AbstractActionController
         if (! $request->isPost()) {
             return ['form' => $form];
         }
-        
+        /** does the passwords match? if not show them the form again without the passwords
+         * evenutally need to replace this with a chained filter or validator
+         */
+        $post = $request->getPost();
+        if($post['password'] !== $post['conf_password'])
+        {
+            return ['form' => $form]; 
+        }
+    
         $user = new User();
         $form->setInputFilter($user->getInputFilter());
         $form->setData($request->getPost());
