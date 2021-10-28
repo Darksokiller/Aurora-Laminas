@@ -5,15 +5,18 @@ use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Filter\ToInt;
 use Laminas\InputFilter\InputFilter;
-use Laminas\InputFilter\InputFilterAwareInterface;
 use Laminas\InputFilter\InputFilterInterface;
 use Laminas\Validator\StringLength;
 use User\Filter\PasswordFilter;
-class User
+class Users
 {
     public $id;
-    public $artist;
-    public $title;
+    public $name;
+    public $email;
+    public $regDate;
+    public $active;
+    public $verified;
+    public $password;
     
     private $inputFilter;
     
@@ -23,6 +26,7 @@ class User
         $this->name = !empty($data['name']) ? $data['name'] : null;
         $this->email = !empty($data['email']) ? $data['email'] : null;
         $this->password  = !empty($data['password']) ? $data['password'] : null;
+        //$this->loginpassword  = !empty($data['loginpassword']) ? $data['loginpassword'] : null;
         $this->regDate = !empty($data['regDate']) ? $data['regDate'] : null;
         $this->active = !empty($data['active']) ? $data['active'] : null;
         $this->verified = !empty($data['verified']) ? $data['verified'] : null;
@@ -35,6 +39,7 @@ class User
             'name' => $this->name,
             'email' => $this->email,
             'password'  => $this->password,
+            //'loginpassword'  => $this->loginpassword,
             'regDate' => $this->regDate,
             'active' => $this->regDate,
             'verified' => $this->verified,
@@ -47,7 +52,43 @@ class User
             __CLASS__
             ));
     }
-    
+    public function getLoginFilter()
+    {
+        if ($this->inputFilter) {
+            return $this->inputFilter;
+        }
+        
+        $inputFilter = new InputFilter();
+        
+                $inputFilter->add([
+                    'name' => 'email',
+                    'required' => true,
+                    'filters' => [
+                        ['name' => StripTags::class],
+                        ['name' => StringTrim::class],
+                    ],
+                    'validators' => [
+                        [
+                            'name' => StringLength::class,
+                            'options' => [
+                                'encoding' => 'UTF-8',
+                                'min' => 1,
+                                'max' => 100,
+                            ],
+                        ],
+                    ],
+                ]);
+                $inputFilter->add([
+                    'name' => 'password',
+                    'required' => true,
+                    'filters' => [
+                        ['name' => StripTags::class],
+                        ['name' => StringTrim::class],
+                    ],
+                ]);
+                $this->inputFilter = $inputFilter;
+                return $this->inputFilter;
+    }
     public function getInputFilter()
     {
         if ($this->inputFilter) {
@@ -121,9 +162,17 @@ class User
                 ],
             ],
         ]);
-        
+                
         $this->inputFilter = $inputFilter;
         return $this->inputFilter;
     }
+    /**
+     * @return the $password
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+    
 }
 ?>

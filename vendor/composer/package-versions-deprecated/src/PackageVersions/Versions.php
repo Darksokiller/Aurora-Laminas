@@ -121,6 +121,7 @@ final class Versions
   'webmozart/assert' => '1.10.0@6964c76c7804814a842473e0c8fd15bab0f18e25',
   'doctrine/instantiator' => '1.4.0@d56bf6102915de5702778fe20f2de3b2fe570b5b',
   'laminas/laminas-console' => '2.8.0@478a6ceac3e31fb38d6314088abda8b239ee23a5',
+  'laminas/laminas-developer-tools' => '2.1.1@8d9e152e0791fe577e1d0fb63c6a973558f36013',
   'laminas/laminas-dom' => '2.8.0@7e85e8d7d2980c716944b8bb8e4a83c0a0dbe91b',
   'laminas/laminas-test' => '3.5.1@621eced0d747ead65c39ab0fc507f66e9bdca276',
   'myclabs/deep-copy' => '1.10.2@776f831124e9c62e1a2c601ecc52e776d8bb7220',
@@ -152,6 +153,7 @@ final class Versions
   'sebastian/resource-operations' => '3.0.3@0f4443cb3a1d92ce809899753bc0d5d5a8dd19a8',
   'sebastian/type' => '2.3.4@b8cd8a1c753c90bc1a0f5372170e3e489136f914',
   'sebastian/version' => '3.0.2@c6c1022351a901512170118436c764e473f6de8c',
+  'symfony/var-dumper' => 'v5.3.8@eaaea4098be1c90c8285543e1356a09c8aa5c8da',
   'theseer/tokenizer' => '1.2.1@34a41e998c2183e22995f158c581e7b5e755ab9e',
   'laminas/laminas-mvc-skeleton' => '1.0.0+no-version-set@',
 );

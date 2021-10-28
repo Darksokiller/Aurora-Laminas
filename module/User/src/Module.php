@@ -17,15 +17,15 @@ class Module implements ConfigProviderInterface
     {
         return [
             'factories' => [
-                Model\UserTable::class => function($container) {
-                    $tableGateway = $container->get(Model\UserTableGateway::class);
-                    return new Model\UserTable($tableGateway);
+                Model\UsersTable::class => function($container) {
+                    $tableGateway = $container->get(Model\UsersTableGateway::class);
+                    return new Model\UsersTable($tableGateway);
                 },
-                Model\UserTableGateway::class => function ($container) {
+                Model\UsersTableGateway::class => function ($container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Model\User());
-                    return new TableGateway('User', $dbAdapter, null, $resultSetPrototype);
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\Users());
+                    return new TableGateway('users', $dbAdapter, null, $resultSetPrototype);
                 },
                 ],
                 ];
@@ -36,7 +36,7 @@ class Module implements ConfigProviderInterface
             'factories' => [
                 Controller\UserController::class => function($container) {
                     return new Controller\UserController(
-                        $container->get(Model\UserTable::class)
+                        $container->get(Model\UsersTable::class)
                         );
                 },
                 ],

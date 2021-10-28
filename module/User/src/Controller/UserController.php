@@ -1,33 +1,32 @@
 <?php
 namespace User\Controller;
 
-use Laminas\Mvc\Controller\AbstractActionController;
+use Application\Controller\AbstractController;
 use Laminas\View\Model\ViewModel;
 use Laminas\Mvc\Controller\Plugin\Layout;
 //use Laminas\Log\Formatter\FirePhp;
 use Laminas\Log\Formatter\FirePhp as Formatter;
 use Laminas\Log\Writer\FirePhp as Writer;
 use Laminas\Log\Logger;
-use User\Model\UserTable;
-use User\Model\User;
+use User\Model\UsersTable;
+use User\Model\Users;
 use User\Form\UserForm;
+use User\Form\LoginForm;
 
 
-class UserController extends AbstractActionController
+
+class UserController extends AbstractController
 {
     // Add this property:
     private $table;
     
     // Add this constructor:
-    public function __construct(UserTable $table)
+    public function __construct(UsersTable $table)
     {
         $this->table = $table;
     }
     public function indexAction()
     {
-        
-        $form = new UserForm();
-        $form->get('submit')->setValue('Add');
         
             $view = new ViewModel([
                 'users' => $this->table->fetchAll(),
@@ -53,6 +52,7 @@ class UserController extends AbstractActionController
          * evenutally need to replace this with a chained filter or validator
          */
         $post = $request->getPost();
+        //var_dump($post);
         if($post['password'] !== $post['conf_password'])
         {
             return ['form' => $form]; 
@@ -119,5 +119,41 @@ class UserController extends AbstractActionController
     
     public function deleteAction()
     {
+    }
+    public function loginAction()
+    {
+        $form = new LoginForm();
+        $form->get('submit')->setValue('Login');
+        
+        $request = $this->getRequest();
+        
+        
+        if (! $request->isPost()) {
+            return ['form' => $form];
+        }
+        /** does the passwords match? if not show them the form again without the passwords
+         * eventually need to replace this with a chained filter or validator
+         */
+        // hash $2y$10$ncO3bgCRcWaCdeINBffN4eDBAuRnhden9eZd6hXQIttrGc1hjoFlO
+        $post = $request->getPost();
+        
+        //var_dump(password_verify('bffbGfbd88', '$2y$10$ncO3bgCRcWaCdeINBffN4eDBAuRnhden9eZd6hXQIttrGc1hjoFlO'));
+        
+        $user = new Users();
+        
+        //var_dump($this->table->login($user, $password = 'test'));
+        
+        $form->setInputFilter($user->getLoginFilter());
+        $form->setData($request->getPost());
+        // var_dump($form->getData());
+        if (! $form->isValid()) {
+            return ['form' => $form];
+        }
+        
+        $user->exchangeArray($form->getData());
+        //var_dump($user);
+        $this->table->login($user);
+        //return $this->redirect()->toRoute('user');
+        
     }
 }

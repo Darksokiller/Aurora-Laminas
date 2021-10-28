@@ -25,6 +25,7 @@ return [
     'Laminas\Router',
     'Laminas\Validator',
     'Laminas\Diactoros',
+    'Laminas\DeveloperTools',
     'Application',
     'Album',
     'User',

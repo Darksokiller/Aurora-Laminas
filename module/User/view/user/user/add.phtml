@@ -7,12 +7,6 @@ $this->headTitle($title);
 $form->setAttribute('action', $this->url('user', ['action' => 'add']));
 $form->prepare();
 
-// echo $this->form()->openTag($form);
-// echo $this->formHidden($form->get('id'));
-// echo $this->formRow($form->get('title'));
-// echo $this->formRow($form->get('artist'));
-// echo $this->formSubmit($form->get('submit'));
-// echo $this->form()->closeTag();
 $this->headLink()->prependStylesheet($this->basePath('css/aurora.css'));
 // This provides a default CSS class and placeholder text for the title element:
 $user = $form->get('name');

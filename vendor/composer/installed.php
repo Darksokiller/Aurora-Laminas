@@ -283,6 +283,15 @@
             'reference' => 'cdabb4bfa669c2c0edb0cb4e014c15b41afd3fb1',
             'dev_requirement' => false,
         ),
+        'laminas/laminas-developer-tools' => array(
+            'pretty_version' => '2.1.1',
+            'version' => '2.1.1.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laminas/laminas-developer-tools',
+            'aliases' => array(),
+            'reference' => '8d9e152e0791fe577e1d0fb63c6a973558f36013',
+            'dev_requirement' => true,
+        ),
         'laminas/laminas-development-mode' => array(
             'pretty_version' => '3.4.1',
             'version' => '3.4.1.0',
@@ -1142,6 +1151,15 @@
             'reference' => '8d224396e28d30f81969f083a58763b8b9ceb0a5',
             'dev_requirement' => false,
         ),
+        'symfony/var-dumper' => array(
+            'pretty_version' => 'v5.3.8',
+            'version' => '5.3.8.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/var-dumper',
+            'aliases' => array(),
+            'reference' => 'eaaea4098be1c90c8285543e1356a09c8aa5c8da',
+            'dev_requirement' => true,
+        ),
         'theseer/tokenizer' => array(
             'pretty_version' => '1.2.1',
             'version' => '1.2.1.0',
@@ -1197,6 +1215,12 @@
             'dev_requirement' => true,
             'replaced' => array(
                 0 => '2.8.0',
+            ),
+        ),
+        'zendframework/zend-developer-tools' => array(
+            'dev_requirement' => true,
+            'replaced' => array(
+                0 => '^2.0.0',
             ),
         ),
         'zendframework/zend-dom' => array(

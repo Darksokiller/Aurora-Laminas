@@ -42,6 +42,7 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         '78d47739fff607f33066e6259f091845' => __DIR__ . '/..' . '/laminas/laminas-cache/autoload/patternPluginManagerPolyfill.php',
+        '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '0a80d26768cd24fcdbe75bdd719255c1' => __DIR__ . '/..' . '/firephp/firephp-core/lib/FirePHPCore/fb.php',
     );
@@ -70,6 +71,7 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
             'Symfony\\Polyfill\\Ctype\\' => 23,
             'Symfony\\Contracts\\Service\\' => 26,
             'Symfony\\Contracts\\EventDispatcher\\' => 34,
+            'Symfony\\Component\\VarDumper\\' => 28,
             'Symfony\\Component\\String\\' => 25,
             'Symfony\\Component\\EventDispatcher\\' => 34,
             'Symfony\\Component\\Console\\' => 26,
@@ -124,6 +126,7 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
             'Laminas\\Diactoros\\' => 18,
             'Laminas\\Di\\' => 11,
             'Laminas\\DevelopmentMode\\' => 24,
+            'Laminas\\DeveloperTools\\' => 23,
             'Laminas\\Db\\' => 11,
             'Laminas\\Console\\' => 16,
             'Laminas\\Config\\' => 15,
@@ -213,6 +216,10 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
         'Symfony\\Contracts\\EventDispatcher\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/event-dispatcher-contracts',
+        ),
+        'Symfony\\Component\\VarDumper\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/var-dumper',
         ),
         'Symfony\\Component\\String\\' => 
         array (
@@ -407,6 +414,10 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
         'Laminas\\DevelopmentMode\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-development-mode/src',
+        ),
+        'Laminas\\DeveloperTools\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laminas/laminas-developer-tools/src',
         ),
         'Laminas\\Db\\' => 
         array (
