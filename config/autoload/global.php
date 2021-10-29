@@ -1,5 +1,5 @@
 <?php
-
+use Laminas\Session;
 /**
  * Global Configuration Override
  *
@@ -20,5 +20,18 @@ return [
         //'dbname' => 'aurora-laminas',
         'username' => 'aurora',
         'password' => 'aurora'
+    ],
+    'session_manager' => [
+        'config' => [
+            //'class' => Session\Config\SessionConfig::class,
+            'options' => [
+                'name' => 'aurora',
+            ],
+        ],
+        'storage' => Session\Storage\SessionArrayStorage::class,
+        'validators' => [
+            Session\Validator\RemoteAddr::class,
+            Session\Validator\HttpUserAgent::class,
+        ],
     ],
 ];

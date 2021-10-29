@@ -14,7 +14,15 @@ class AbstractController extends AbstractActionController
         $this->baseUrl = $this->getRequest()->getBasePath();
         //die('running');
         //var_dump($this);
+        $serviceManager = $e->getApplication()->getServiceManager();
+        var_dump($serviceManager);
+       // $session = $serviceManager->get()
+        $this->_init();
         return parent::onDispatch($e);
+    }
+    public function _init()
+    {
+       // var_dump($_SESSION);
     }
     
 //     public function setEventManager(EventManagerInterface $events)
