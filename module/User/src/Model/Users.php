@@ -26,7 +26,6 @@ class Users
         $this->name = !empty($data['name']) ? $data['name'] : null;
         $this->email = !empty($data['email']) ? $data['email'] : null;
         $this->password  = !empty($data['password']) ? $data['password'] : null;
-        //$this->loginpassword  = !empty($data['loginpassword']) ? $data['loginpassword'] : null;
         $this->regDate = !empty($data['regDate']) ? $data['regDate'] : null;
         $this->active = !empty($data['active']) ? $data['active'] : null;
         $this->verified = !empty($data['verified']) ? $data['verified'] : null;
@@ -39,7 +38,6 @@ class Users
             'name' => $this->name,
             'email' => $this->email,
             'password'  => $this->password,
-            //'loginpassword'  => $this->loginpassword,
             'regDate' => $this->regDate,
             'active' => $this->regDate,
             'verified' => $this->verified,

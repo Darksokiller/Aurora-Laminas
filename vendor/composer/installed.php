@@ -526,6 +526,15 @@
             'reference' => NULL,
             'dev_requirement' => false,
         ),
+        'laminas/laminas-permissions-acl' => array(
+            'pretty_version' => '2.8.0',
+            'version' => '2.8.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laminas/laminas-permissions-acl',
+            'aliases' => array(),
+            'reference' => '7af6463695d76dbf25c6b03e6ebb792c8f1ab67e',
+            'dev_requirement' => false,
+        ),
         'laminas/laminas-psr7bridge' => array(
             'pretty_version' => '1.3.1',
             'version' => '1.3.1.0',
@@ -1293,6 +1302,12 @@
             'dev_requirement' => false,
             'replaced' => array(
                 0 => '^1.0.1',
+            ),
+        ),
+        'zendframework/zend-permissions-acl' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '^2.7.1',
             ),
         ),
         'zendframework/zend-psr7bridge' => array(

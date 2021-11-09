@@ -2,10 +2,13 @@
 namespace User\Model;
 
 use RuntimeException;
+use Laminas\Session;
 use User\Model\Users as Users;
 use Laminas\Db\TableGateway\TableGatewayInterface;
 use Laminas\Validator\EmailAddress as emailValidater;
 use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter as AuthAdapter;
+use Laminas\Authentication\AuthenticationService as AuthService;
+use Laminas\Authentication\Result;
 
 class UsersTable
 {
@@ -18,14 +21,6 @@ class UsersTable
     public function login(Users $user)
     {
         
-        // yes this is an anonamous function which can be used nearly anywhere
-//         $validationCallback = function($password, $hash) {
-//             return $this->authenticate($password, $password);
-//         };
-
-       // $hash = $this->getHashByEmail($user->email);
-       // $password = $user->password;
-        //var_dump($hash);
         /**
          * 
          * @var unknown $callback
@@ -46,17 +41,40 @@ class UsersTable
         $authAdapter->setIdentity($user->email)
         ->setCredential($user->getPassword());
         
-        //$select = $authAdapter->getDbSelect();
-        //$select->where('active = 1');
+        $select = $authAdapter->getDbSelect();
+        $select->where('active = 1')->where('verified = 1');
         
         // Perform the authentication query, saving the result
-        $result = $authAdapter->authenticate();
-        if($result->isValid()){
-            var_dump($authAdapter->getResultRowObject());
-        }
-        else {
-            var_dump($result->getMessages());
-        }
+        $authService = new AuthService();
+        $authService->setAdapter($authAdapter);
+       //$result = $authAdapter->authenticate();
+        $result = $authService->authenticate();
+        //var_dump($result->getMessages());
+            switch ($result->getCode()) {
+                
+                case Result::SUCCESS:
+                    /** do stuff for successful authentication **/
+                   // $omitColumns = ['password'];
+                    //$userSession = new Session\Container('user');
+                    //$userSession->details = $authAdapter->getResultRowObject(null, $omitColumns);
+                    //var_dump($authAdapter->getResultRowObject(null, $omitColumns));
+                    return true;
+                    break;
+                
+                case Result::FAILURE_IDENTITY_NOT_FOUND:
+                    /** do stuff for nonexistent identity **/
+                    break;
+                    
+                case Result::FAILURE_CREDENTIAL_INVALID:
+                    /** do stuff for invalid credential **/
+                    break;
+                    
+                default:
+                    /** do stuff for other failure **/
+                    return false;
+                    break;
+            }
+        //}
         
         //die();
     }
@@ -76,20 +94,20 @@ class UsersTable
         }
         return $row->password;
     }
-    public static function authenticate($password, $hash)
+    public function getUserByEmail($email)
     {
-//         $email = (string) $email;
-//         $rowset = $this->tableGateway->select(['email' => $email]);
-//         $row = $rowset->current();
-//         if (! $row) {
-//             throw new RuntimeException(sprintf(
-//                 'Could not find row with identifier %d',
-//                 $email
-//                 ));
-//         }
-        return password_verify($password, $hash);
+        $email = (string) $email;
+        $rowset = $this->tableGateway->select(['email' => $email]);
+        $row = $rowset->current();
+        unset($row->password);
+        if (! $row) {
+            throw new RuntimeException(sprintf(
+                'Could not find row with identifier %d',
+                $email
+                ));
+        }
         
-        //return $row;
+        return $row;
     }
     public function getUser($id)
     {

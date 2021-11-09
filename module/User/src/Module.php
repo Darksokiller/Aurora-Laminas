@@ -15,6 +15,7 @@ class Module implements ConfigProviderInterface
     }
     public function getServiceConfig()
     {
+       
         return [
             'factories' => [
                 Model\UsersTable::class => function($container) {
@@ -36,6 +37,11 @@ class Module implements ConfigProviderInterface
             'factories' => [
                 Controller\UserController::class => function($container) {
                     return new Controller\UserController(
+                        $container->get(Model\UsersTable::class)
+                        );
+                },
+                Controller\ProfileController::class => function($container) {
+                    return new Controller\ProfileController(
                         $container->get(Model\UsersTable::class)
                         );
                 },

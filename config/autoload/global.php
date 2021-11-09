@@ -21,17 +21,38 @@ return [
         'username' => 'aurora',
         'password' => 'aurora'
     ],
-    'session_manager' => [
-        'config' => [
-            //'class' => Session\Config\SessionConfig::class,
-            'options' => [
-                'name' => 'aurora',
-            ],
-        ],
-        'storage' => Session\Storage\SessionArrayStorage::class,
+    'session' => [
+//         'config' => [
+//             'class' => \User\Model\UsersSessionConfig::class,
+//         ],
+        //'storage' => \Laminas\Session\Storage\SessionArrayStorage::class,
         'validators' => [
-            Session\Validator\RemoteAddr::class,
-            Session\Validator\HttpUserAgent::class,
+           // \Laminas\Session\Validator\RemoteAddr::class,
+            //\Laminas\Session\Validator\HttpUserAgent::class,
         ],
     ],
+    'session_config' => [
+        'config_class' => User\Model\UsersSessionConfig::class,
+        //'remember_me_seconds' => 60,
+    ],
+    'session_storage' => [
+        'type' => \Laminas\Session\Storage\SessionArrayStorage::class,
+    ],
+    'session_validators' => [
+                \Laminas\Session\Validator\RemoteAddr::class,
+                \Laminas\Session\Validator\HttpUserAgent::class,
+    ],
+//     'session_manager' => [
+//         'session_config' => [
+//             'class' => Session\Config\SessionConfig::class,
+//             'options' => [
+//                 'name' => 'aurora',
+//             ],
+//         ],
+//         'storage' => Session\Storage\SessionArrayStorage::class,
+//         'validators' => [
+//             Session\Validator\RemoteAddr::class,
+//             Session\Validator\HttpUserAgent::class,
+//         ],
+//     ],
 ];

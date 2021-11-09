@@ -18,12 +18,15 @@ use User\Form\LoginForm;
 class UserController extends AbstractController
 {
     // Add this property:
-    private $table;
+    public $table;
     
     // Add this constructor:
     public function __construct(UsersTable $table)
     {
         $this->table = $table;
+    }
+    public function _init($config = ['Some\Class\name::class' => 'SomeObject']) {
+        parent::_init($config);
     }
     public function indexAction()
     {
@@ -120,8 +123,26 @@ class UserController extends AbstractController
     public function deleteAction()
     {
     }
+    public function logoutAction()
+    {
+
+        switch ($this->authService->hasIdentity())
+        {
+            case true :
+                $this->authService->clearIdentity();
+                return $this->redirect()->toUrl('/');
+                break;
+            case false:
+                
+                break;
+            default:
+                
+                break;
+        }
+    }
     public function loginAction()
     {
+        
         $form = new LoginForm();
         $form->get('submit')->setValue('Login');
         
@@ -137,8 +158,6 @@ class UserController extends AbstractController
         // hash $2y$10$ncO3bgCRcWaCdeINBffN4eDBAuRnhden9eZd6hXQIttrGc1hjoFlO
         $post = $request->getPost();
         
-        //var_dump(password_verify('bffbGfbd88', '$2y$10$ncO3bgCRcWaCdeINBffN4eDBAuRnhden9eZd6hXQIttrGc1hjoFlO'));
-        
         $user = new Users();
         
         //var_dump($this->table->login($user, $password = 'test'));
@@ -152,8 +171,19 @@ class UserController extends AbstractController
         
         $user->exchangeArray($form->getData());
         //var_dump($user);
-        $this->table->login($user);
+        //$this->table->login($user);
+        if($this->table->login($user))
+        {
+            $this->redirect()->toRoute('profile', ['id' => $user->id]);
+        }
+        else {
+            return $this->redirect()->toUrl('/user/login-failure');
+        }
         //return $this->redirect()->toRoute('user');
         
+    }
+    public function loginFailureAction()
+    {
+        return new ViewModel(['messages' => 'failed login']);
     }
 }

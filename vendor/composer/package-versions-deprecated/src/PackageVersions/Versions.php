@@ -84,6 +84,7 @@ final class Versions
   'laminas/laminas-mvc-plugin-identity' => '1.3.0@d22e7fb74f0395828df5cd42ed55d23a98569ed1',
   'laminas/laminas-mvc-plugin-prg' => '1.3.0@943c03a869a1a421ce3c6dc2f034021b247d9b17',
   'laminas/laminas-mvc-plugins' => '1.1.0@d127f94f258f9d4ae1a3fa233bead2110cd538a9',
+  'laminas/laminas-permissions-acl' => '2.8.0@7af6463695d76dbf25c6b03e6ebb792c8f1ab67e',
   'laminas/laminas-psr7bridge' => '1.3.1@b1158f0574164039f698a261c01c26119cc6dbd6',
   'laminas/laminas-router' => '3.5.0@44759e71620030c93d99e40b394fe9fff8f0beda',
   'laminas/laminas-servicemanager' => '3.10.0@e52b985909e0940bf22d34f322eb3f48bbef6bd1',
