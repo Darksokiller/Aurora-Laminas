@@ -1,24 +1,19 @@
 <?php
 namespace User\Model;
-
+use Application\Model\AbstractModel;
 use RuntimeException;
 use Laminas\Session;
-use User\Model\Users as Users;
+use User\Model\User as User;
 use Laminas\Db\TableGateway\TableGatewayInterface;
 use Laminas\Validator\EmailAddress as emailValidater;
 use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter as AuthAdapter;
 use Laminas\Authentication\AuthenticationService as AuthService;
 use Laminas\Authentication\Result;
 
-class UsersTable
+class UserTable extends AbstractModel
 {
-    private $tableGateway;
-    
-    public function __construct(TableGatewayInterface $tableGateway)
-    {
-        $this->tableGateway = $tableGateway;
-    }
-    public function login(Users $user)
+
+    public function login(User $user)
     {
         
         /**
@@ -33,7 +28,7 @@ class UsersTable
         };
         
         $authAdapter = new AuthAdapter($this->tableGateway->getAdapter(), 
-                                       'users', 
+                                       'user', 
                                        'email', 
                                        'password',
                                        $callback);
@@ -94,12 +89,12 @@ class UsersTable
         }
         return $row->password;
     }
-    public function getUserByEmail($email)
+    public function getUserByEmail($email, $asArray = false)
     {
         $email = (string) $email;
         $rowset = $this->tableGateway->select(['email' => $email]);
         $row = $rowset->current();
-        unset($row->password);
+        //unset($row->password);
         if (! $row) {
             throw new RuntimeException(sprintf(
                 'Could not find row with identifier %d',
@@ -124,10 +119,10 @@ class UsersTable
         return $row;
     }
     
-    public function saveUser(Users $user)
+    public function saveUser(User $user)
     {
         $data = [
-            'name' => $user->name,
+            'userName' => $user->userName,
             'email' => $user->email,
             'password'  => $user->password,
         ];

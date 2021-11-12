@@ -2,20 +2,11 @@
 namespace User\Controller;
 use Application\Controller\AbstractController;
 use Laminas\View\Model\ViewModel;
-use Laminas\Mvc\Controller\Plugin\Layout;
-//use Laminas\Log\Formatter\FirePhp;
-use Laminas\Log\Formatter\FirePhp as Formatter;
-use Laminas\Log\Writer\FirePhp as Writer;
-use Laminas\Log\Logger;
-use User\Model\UsersTable;
-use User\Model\Users;
-use User\Form\UserForm;
-use User\Form\LoginForm;
-use Laminas\Mvc\View\Http\ViewManager;
+use User\Model\UserTable;
 
 class ProfileController extends AbstractController
 {
-    public function __construct(UsersTable $table)
+    public function __construct(UserTable $table)
     {
         $this->table = $table;
     }
@@ -29,6 +20,7 @@ class ProfileController extends AbstractController
     }
     public function indexAction()
     {
+        var_dump($this->table->getResourceId());
         var_dump($this->user);
         //$applicatio
         //var_dump($_SESSION['user']['details']);

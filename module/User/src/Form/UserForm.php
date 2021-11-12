@@ -20,7 +20,7 @@ class UserForm extends Form
             'type' => 'hidden'
         ]);
         $this->add([
-            'name' => 'name',
+            'name' => 'userName',
             'type' => 'text',
             'options' => [
                 'label' => 'User Name'

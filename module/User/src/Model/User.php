@@ -8,36 +8,71 @@ use Laminas\InputFilter\InputFilter;
 use Laminas\InputFilter\InputFilterInterface;
 use Laminas\Validator\StringLength;
 use User\Filter\PasswordFilter;
-class Users
+use Laminas\Permissions\Acl\ProprietaryInterface;
+use Laminas\Permissions\Acl\Resource\ResourceInterface;
+use Laminas\Permissions\Acl\Role\RoleInterface;
+use Laminas\Filter\StringToLower;
+
+class User implements RoleInterface, ResourceInterface, ProprietaryInterface
 {
+    protected $resourceId = 'user';
     public $id;
-    public $name;
+    public $userName;
     public $email;
     public $regDate;
     public $active;
     public $verified;
     public $password;
+    public $role;
     
     private $inputFilter;
     
     public function exchangeArray(array $data)
     {
         $this->id     = !empty($data['id']) ? $data['id'] : null;
-        $this->name = !empty($data['name']) ? $data['name'] : null;
+        $this->userName = !empty($data['userName']) ? $data['userName'] : null;
         $this->email = !empty($data['email']) ? $data['email'] : null;
         $this->password  = !empty($data['password']) ? $data['password'] : null;
+       // $this->password  = null;
+        $this->role  = !empty($data['role']) ? $data['role'] : null;
         $this->regDate = !empty($data['regDate']) ? $data['regDate'] : null;
         $this->active = !empty($data['active']) ? $data['active'] : null;
         $this->verified = !empty($data['verified']) ? $data['verified'] : null;
+        return $this;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Laminas\Permissions\Acl\ProprietaryInterface::getOwnerId()
+     */
+    public function getOwnerId()
+    {
+        // TODO Auto-generated method stub
+        return $this->id;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \Laminas\Permissions\Acl\Role\RoleInterface::getRoleId()
+     */
+    public function getRoleId()
+    {
+        // TODO Auto-generated method stub
+        return $this->role;
+    }
+    public function getResourceId()
+    {
+        return $this->resourceId;
     }
     // Add the following method:
     public function getArrayCopy()
     {
         return [
             'id'     => $this->id,
-            'name' => $this->name,
+            'userName' => $this->userName,
             'email' => $this->email,
             'password'  => $this->password,
+            'role' => $this->role,
             'regDate' => $this->regDate,
             'active' => $this->regDate,
             'verified' => $this->verified,
@@ -104,7 +139,7 @@ class Users
         ]);
         
         $inputFilter->add([
-            'name' => 'name',
+            'name' => 'userName',
             'required' => true,
             'filters' => [
                 ['name' => StripTags::class],

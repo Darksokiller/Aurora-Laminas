@@ -29,4 +29,5 @@ return [
     'Application',
     'Album',
     'User',
+    'Project',
 ];

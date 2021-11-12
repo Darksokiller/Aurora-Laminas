@@ -86,6 +86,7 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
             'Psr\\Container\\' => 14,
             'Psr\\Cache\\' => 10,
             'Prophecy\\' => 9,
+            'Project\\' => 8,
             'PhpParser\\' => 10,
             'PackageVersions\\' => 16,
         ),
@@ -267,6 +268,10 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
         'Prophecy\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy',
+        ),
+        'Project\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/Project/src',
         ),
         'PhpParser\\' => 
         array (
