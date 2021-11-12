@@ -8,10 +8,11 @@ use Laminas\Mvc\Controller\Plugin\Layout;
 use Laminas\Log\Formatter\FirePhp as Formatter;
 use Laminas\Log\Writer\FirePhp as Writer;
 use Laminas\Log\Logger;
-use User\Model\UsersTable;
-use User\Model\Users;
+use User\Model\UserTable;
+use User\Model\User;
 use User\Form\UserForm;
 use User\Form\LoginForm;
+use PhpParser\Node\Stmt\Switch_;
 
 
 
@@ -21,23 +22,18 @@ class UserController extends AbstractController
     public $table;
     
     // Add this constructor:
-    public function __construct(UsersTable $table)
+    public function __construct(UserTable $table)
     {
         $this->table = $table;
     }
-    public function _init($config = ['Some\Class\name::class' => 'SomeObject']) {
-        parent::_init($config);
+    public function _init() {
+        $this->table->setAcl($this->acl);
     }
     public function indexAction()
     {
-        
-            $view = new ViewModel([
-                'users' => $this->table->fetchAll(),
-            ]);
-        
-            
-           // var_dump($view);
-            return $view;
+        $this->view->setVariable('users', $this->table->fetchAll());
+
+            return $this->view;
     }
     
     public function addAction()
@@ -77,6 +73,15 @@ class UserController extends AbstractController
     
     public function editAction()
     {
+       // var_dump($this->acl);
+        switch ($this->authService->hasIdentity() && $this->acl->isAllowed($this->user->role, 'users', 'edit-any')) {
+            case true:
+                //die('we have access');
+                break;
+            case false:
+               // die('we do not have permission');
+                break;
+        }
         $id = (int) $this->params()->fromRoute('id', 0);
         
         if (0 === $id) {
@@ -158,7 +163,7 @@ class UserController extends AbstractController
         // hash $2y$10$ncO3bgCRcWaCdeINBffN4eDBAuRnhden9eZd6hXQIttrGc1hjoFlO
         $post = $request->getPost();
         
-        $user = new Users();
+        $user = new User();
         
         //var_dump($this->table->login($user, $password = 'test'));
         

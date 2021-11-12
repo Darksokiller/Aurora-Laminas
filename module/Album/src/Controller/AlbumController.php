@@ -1,7 +1,8 @@
 <?php
 namespace Album\Controller;
 
-use Laminas\Mvc\Controller\AbstractActionController;
+;use Laminas\Mvc\Controller\AbstractActionController;
+use Application\Controller\AbstractController;
 use Laminas\View\Model\ViewModel;
 use Laminas\Mvc\Controller\Plugin\Layout;
 use Album\Model\AlbumTable;
@@ -9,21 +10,27 @@ use Album\Model\Album;
 use Album\Form\AlbumForm;
 
 
-class AlbumController extends AbstractActionController
+class AlbumController extends AbstractController
 {
     // Add this property:
-    private $table;
+    //public $table;
     
     // Add this constructor:
     public function __construct(AlbumTable $table)
     {
         $this->table = $table;
+        
+    }
+    public function _init()
+    {
+        $this->table->setAcl($this->acl);
     }
     public function indexAction()
     {
         //$layout = new Layout();
         //$view = new ViewModel();
-        
+        var_dump($this->table->getResourceId());
+        var_dump($this->table->getAcl());
         $form = new AlbumForm();
         $form->get('submit')->setValue('Add');
         

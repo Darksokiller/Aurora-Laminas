@@ -1,18 +1,22 @@
 <?php
 namespace Album\Model;
 
-use RuntimeException;
-use Laminas\Db\TableGateway\TableGatewayInterface;
+// use RuntimeException;
+// use Laminas\Db\TableGateway\TableGatewayInterface;
+use Application\Model\AbstractModel;
 
-class AlbumTable
+class AlbumTable extends AbstractModel
 {
-    private $tableGateway;
+    //private $tableGateway;
     
-    public function __construct(TableGatewayInterface $tableGateway)
+//     public function __construct(TableGatewayInterface $tableGateway)
+//     {
+//         $this->tableGateway = $tableGateway;
+//     }
+    public function _init()
     {
-        $this->tableGateway = $tableGateway;
+        
     }
-    
     public function fetchAll()
     {
         return $this->tableGateway->select();

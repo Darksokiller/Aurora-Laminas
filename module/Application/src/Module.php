@@ -12,6 +12,9 @@ use Laminas\Session\SessionManager;
 use Laminas\Session\Config\SessionConfig;
 use Laminas\Session\Container;
 use Laminas\Session\Validator;
+use Laminas\Permissions\Acl\Acl;
+use Application\Permissions\PermissionsManager;
+use Laminas\Mvc\Application;
 
 class Module
 {
@@ -88,9 +91,14 @@ class Module
                 
                 return $sessionManager;
             },
-//             Model\UsersTable::class => function($container) {
-//                 $tableGateway = $container->get(Model\UsersTableGateway::class);
-//                 return new Model\UsersTable($tableGateway);
+            Application\Permissions\PermissionsManager::class => function($container) {
+                return new Application\Permissions\PermissionsManager(new Acl());
+            },
+//             Application\Model\AbstractModel::class => function($container) {
+//                 $tableGateway = $container->get(Application\Model\AbstractModel::class);
+//                 $acl = $container->get(Application\Permissions\PermissionsManager::class);
+//                 var_dump($acl);
+//                 return new Application\Model\AbstractModel($tableGateway,$acl);
 //             },
 //             Model\UsersTableGateway::class => function ($container) {
 //                 $dbAdapter = $container->get(AdapterInterface::class);
