@@ -6,6 +6,10 @@ use Laminas\Permissions\Acl\Assertion\OwnershipAssertion as Owner;
 
 class PermissionsManager
 {
+    /**
+     * 
+     * @var $acl Laminas\Permissions\Acl\Acl
+     */
     public $acl;
     private $roles = ['superAdmin', 'admin','moderator', 'user', 'guest'];
     
@@ -34,6 +38,9 @@ class PermissionsManager
         $this->acl->addResource('album');
         
         $this->acl->allow('guest', null, 'view');
+        $this->acl->allow('guest', 'user', ['register', 'login']);
+        $this->acl->allow('user', 'user', 'logout');
+        $this->acl->deny('user', 'user', ['register', 'login']);
         $this->acl->allow('user', 'album', 'edit', new Owner());
         $this->acl->allow('user', 'user', 'edit', new Owner());
         $this->acl->allow('user', 'profile', 'edit', new Owner());

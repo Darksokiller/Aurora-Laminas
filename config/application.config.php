@@ -52,6 +52,7 @@ return [
         'Laminas\Session\Config\ConfigInterface' => 'Laminas\Session\Service\SessionConfigFactory',
     ],
 
+
     // Used to create an own service manager. May contain one or more child arrays.
     // 'service_listener_options' => [
     //     [

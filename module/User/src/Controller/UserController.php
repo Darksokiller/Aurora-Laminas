@@ -36,7 +36,7 @@ class UserController extends AbstractController
             return $this->view;
     }
     
-    public function addAction()
+    public function registerAction()
     {
         
         $form = new UserForm();
@@ -73,56 +73,67 @@ class UserController extends AbstractController
     
     public function editAction()
     {
-       // var_dump($this->acl);
-        switch ($this->authService->hasIdentity() && $this->acl->isAllowed($this->user->role, 'users', 'edit-any')) {
-            case true:
-                //die('we have access');
-                break;
-            case false:
-               // die('we do not have permission');
-                break;
-        }
         $id = (int) $this->params()->fromRoute('id', 0);
         
-        if (0 === $id) {
-            return $this->redirect()->toRoute('user', ['action' => 'add']);
-        }
-        
-        // Retrieve the User with the specified id. Doing so raises
-        // an exception if the User is not found, which should result
-        // in redirecting to the landing page.
         try {
             $user = $this->table->getUser($id);
         } catch (\Exception $e) {
             return $this->redirect()->toRoute('user', ['action' => 'index']);
         }
         
-        $form = new UserForm();
-        $form->bind($user);
-        $form->get('submit')->setAttribute('value', 'Edit');
-        
-        $request = $this->getRequest();
-        $viewData = ['id' => $id, 'form' => $form];
-        
-        if (! $request->isPost()) {
-            return $viewData;
+        switch ($this->acl->isAllowed($this->user, $user, $this->action)) {
+            case true:
+                
+                if (0 === $id) {
+                    return $this->redirect()->toRoute('user', ['action' => 'add']);
+                }
+                
+                // Retrieve the User with the specified id. Doing so raises
+                // an exception if the User is not found, which should result
+                // in redirecting to the landing page.
+                try {
+                    $user = $this->table->getUser($id);
+                } catch (\Exception $e) {
+                    return $this->redirect()->toRoute('user', ['action' => 'index']);
+                }
+                
+                $form = new UserForm();
+                $form->bind($user);
+                $form->get('submit')->setAttribute('value', 'Edit');
+                
+                $request = $this->getRequest();
+                $viewData = ['id' => $id, 'form' => $form];
+                
+                if (! $request->isPost()) {
+                    return $viewData;
+                }
+                
+                $form->setInputFilter($user->getInputFilter());
+                
+                $form->setData($request->getPost());
+                
+                if (! $form->isValid()) {
+                    return $viewData;
+                }
+                
+                try {
+                    $this->table->saveUser($user);
+                } catch (\Exception $e) {
+                }
+                
+                // Redirect to User list
+                return $this->redirect()->toRoute('user', ['action' => 'index']);
+                
+                break;
+            case false:
+                $this->flashMessenger()->addWarningMessage('You do not have the required permissions to edit other users');
+                $this->redirect()->toUrl('/forbidden');
+                //die('we do not have permission');
+                break;
         }
         
-        $form->setInputFilter($user->getInputFilter());
         
-        $form->setData($request->getPost());
         
-        if (! $form->isValid()) {
-            return $viewData;
-        }
-        
-        try {
-            $this->table->saveUser($user);
-        } catch (\Exception $e) {
-        }
-        
-        // Redirect to User list
-        return $this->redirect()->toRoute('user', ['action' => 'index']);
     }
     
     public function deleteAction()

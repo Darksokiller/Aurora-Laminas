@@ -94,18 +94,6 @@ class Module
             Application\Permissions\PermissionsManager::class => function($container) {
                 return new Application\Permissions\PermissionsManager(new Acl());
             },
-//             Application\Model\AbstractModel::class => function($container) {
-//                 $tableGateway = $container->get(Application\Model\AbstractModel::class);
-//                 $acl = $container->get(Application\Permissions\PermissionsManager::class);
-//                 var_dump($acl);
-//                 return new Application\Model\AbstractModel($tableGateway,$acl);
-//             },
-//             Model\UsersTableGateway::class => function ($container) {
-//                 $dbAdapter = $container->get(AdapterInterface::class);
-//                 $resultSetPrototype = new ResultSet();
-//                 $resultSetPrototype->setArrayObjectPrototype(new Model\Users());
-//                 return new TableGateway('users', $dbAdapter, null, $resultSetPrototype);
-//             },
         ];
     }
 

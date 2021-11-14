@@ -7,6 +7,8 @@ namespace Application;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
+use Application\Controller\Plugin\CreateHttpForbiddenModel;
+use Application\Controller\Plugin\CreateHttpForbiddenFactory;
 
 return [
     'router' => [
@@ -18,6 +20,16 @@ return [
                     'defaults' => [
                         'controller' => Controller\IndexController::class,
                         'action'     => 'index',
+                    ],
+                ],
+            ],
+            'forbidden' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/forbidden',
+                    'defaults' => [
+                        'controller' => Controller\IndexController::class,
+                        'action'     => 'forbidden',
                     ],
                 ],
             ],
@@ -38,6 +50,16 @@ return [
             Controller\IndexController::class => InvokableFactory::class,
         ],
     ],
+//     'controller_plugins' => [
+//         'aliases' => [
+//             'forbidden' => CreateHttpForbiddenModel::class,
+//             'Forbidden' => CreateHttpForbiddenModel::class,
+//             'Application\Controller\Plugin\CreateHttpForbiddenModel' => CreateHttpForbiddenModel::class,
+//         ],
+//         'factories' => [
+//             CreateHttpForbiddenModel::class => CreateHttpForbiddenModelFactory::class
+//         ],
+//     ],
     'view_manager' => [
         'display_not_found_reason' => true,
         'display_exceptions'       => true,

@@ -105,6 +105,7 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
             'Laminas\\Router\\' => 15,
             'Laminas\\Psr7Bridge\\' => 19,
             'Laminas\\Permissions\\Acl\\' => 24,
+            'Laminas\\Navigation\\' => 19,
             'Laminas\\Mvc\\Plugin\\Prg\\' => 23,
             'Laminas\\Mvc\\Plugin\\Identity\\' => 28,
             'Laminas\\Mvc\\Plugin\\FlashMessenger\\' => 34,
@@ -332,6 +333,10 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
         'Laminas\\Permissions\\Acl\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-permissions-acl/src',
+        ),
+        'Laminas\\Navigation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laminas/laminas-navigation/src',
         ),
         'Laminas\\Mvc\\Plugin\\Prg\\' => 
         array (

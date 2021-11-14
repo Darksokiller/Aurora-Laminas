@@ -16,4 +16,11 @@ class IndexController extends AbstractController
         return $this->view;
         //return new ViewModel();
     }
+    public function forbiddenAction()
+    {
+        $response = $this->getResponse();
+        $response->setStatusCode(403);
+        
+        return new ViewModel();
+    }
 }
