@@ -20,10 +20,11 @@ class ProfileController extends AbstractController
     }
     public function indexAction()
     {
-        var_dump($this->table->getResourceId());
+        //var_dump($this->table->get);
         var_dump($this->user);
         //$applicatio
         //var_dump($_SESSION['user']['details']);
         return new ViewModel(['messages' => ['welcome' => 'Welcome back!!']]);
     }
+    
 }

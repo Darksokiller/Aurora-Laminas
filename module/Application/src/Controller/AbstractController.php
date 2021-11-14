@@ -27,6 +27,8 @@ class AbstractController extends AbstractActionController
     public $acl;
 
     public $authenticated = false;
+    
+    protected $action;
 
     protected $sessionContainer;
 
@@ -39,6 +41,8 @@ class AbstractController extends AbstractActionController
         $this->acl = $sm->get('Application\Permissions\PermissionsManager');
         $this->acl = $this->acl->getAcl();
         $this->view = new ViewModel();
+        
+        //var_dump($sm->get('Application\Controller\Plugin\CreateHttpForbiddenModel'));
         
         switch ($this->authService->hasIdentity()) {
             case true :
@@ -53,16 +57,20 @@ class AbstractController extends AbstractActionController
                 ]);
                 break;
         }
-        
+        //var_dump($this->user);
         $this->user->password = null;
         $this->view->user = $this->user;
         $this->view->acl = $this->acl;
+        $this->action = $this->params()->fromRoute('action');
+        $this->layout()->acl = $this->acl;
+        $this->layout()->user = $this->user;
         $this->layout()->authenticated = $this->authenticated;
-        $this->layout()->userName = $this->user->userName;
+        //$this->layout()->userName = $this->user->userName;
         $this->_init();
         return parent::onDispatch($e);
     }
 
     public function _init()
     {}
+
 }

@@ -526,6 +526,15 @@
             'reference' => NULL,
             'dev_requirement' => false,
         ),
+        'laminas/laminas-navigation' => array(
+            'pretty_version' => '2.11.1',
+            'version' => '2.11.1.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laminas/laminas-navigation',
+            'aliases' => array(),
+            'reference' => '59f69237a6ae31135841c5e188f363d46101e145',
+            'dev_requirement' => false,
+        ),
         'laminas/laminas-permissions-acl' => array(
             'pretty_version' => '2.8.0',
             'version' => '2.8.0.0',
@@ -1302,6 +1311,12 @@
             'dev_requirement' => false,
             'replaced' => array(
                 0 => '^1.0.1',
+            ),
+        ),
+        'zendframework/zend-navigation' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '^2.9.1',
             ),
         ),
         'zendframework/zend-permissions-acl' => array(
