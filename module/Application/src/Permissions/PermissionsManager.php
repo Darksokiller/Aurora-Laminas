@@ -38,15 +38,21 @@ class PermissionsManager
         $this->acl->addResource('album');
         
         $this->acl->allow('guest', null, 'view');
-        $this->acl->allow('guest', 'user', ['register', 'login']);
+        $this->acl->allow('user', null, 'view');
+        $this->acl->allow('guest', 'user', ['register.view', 'login.view']);
         $this->acl->allow('user', 'user', 'logout');
-        $this->acl->deny('user', 'user', ['register', 'login']);
-        $this->acl->allow('user', 'album', 'edit', new Owner());
-        $this->acl->allow('user', 'user', 'edit', new Owner());
-        $this->acl->allow('user', 'profile', 'edit', new Owner());
-        $this->acl->allow('user', 'project', 'edit', new Owner());
+        $this->acl->allow('user', 'user', 'user.view.list');
+        
+        $this->acl->deny('user', 'user', ['register', 'login', 'user.create.new']);
+        
+        $this->acl->allow('user', null, ['edit', 'delete'], new Owner());
+        //$this->acl->allow('user', 'album', 'album.create');
+        //$this->acl->allow('user', 'user', 'edit', new Owner());
+        //$this->acl->allow('user', 'profile', 'edit', new Owner());
+        //$this->acl->allow('user', 'project', 'edit', new Owner());
         $this->acl->allow('admin');
         $this->acl->allow('superAdmin');
+        $this->acl->deny(['admin', 'superAdmin'], 'user', ['register.view', 'login.view']);
         
         return $this;
     }

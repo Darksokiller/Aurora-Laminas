@@ -25,7 +25,18 @@ return [
             ],
         ],
     ],
-    
+    'navigation' => [
+        'static' => [
+            [
+                'label' => 'Albums',
+                'route' => 'album',
+                'action' => 'index',
+                'class' => 'nav-link',
+                'resource' => 'album',
+                'privilege' => 'view',
+            ],
+        ],
+    ],
     'view_manager' => [
         'template_path_stack' => [
             'album' => __DIR__ . '/../view',

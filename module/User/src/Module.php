@@ -5,6 +5,10 @@ use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\ModuleManager\Feature\ConfigProviderInterface;
+use User\Model\User;
+use User\Model\UserTable;
+use User\Model\Profile;
+use User\Model\ProfileTable;
 
 
 class Module implements ConfigProviderInterface
@@ -27,6 +31,16 @@ class Module implements ConfigProviderInterface
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\User());
                     return new TableGateway('user', $dbAdapter, null, $resultSetPrototype);
+                },
+                Model\ProfileTable::class => function($container) {
+                    $tableGateway = $container->get(Model\ProfileTableGateway::class);
+                    return new Model\ProfileTable($tableGateway);
+                },
+                Model\ProfileTableGateway::class => function ($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\Profile());
+                    return new TableGateway('user_profile', $dbAdapter, null, $resultSetPrototype);
                 },
                 ],
                 ];

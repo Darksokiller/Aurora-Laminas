@@ -104,6 +104,20 @@ class UserTable extends AbstractModel
         
         return $row;
     }
+    public function fetchUserById($id)
+    {
+        $id = (int) $id;
+        $rowset = $this->tableGateway->select(['id' => $id]);
+        $row = $rowset->current();
+        if (! $row) {
+            throw new RuntimeException(sprintf(
+                'Could not find row with identifier %d',
+                $id
+                ));
+        }
+        $row->password = null;
+        return $row;
+    }
     public function getUser($id)
     {
         $id = (int) $id;

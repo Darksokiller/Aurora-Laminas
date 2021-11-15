@@ -42,33 +42,5 @@ return [
                 \Laminas\Session\Validator\RemoteAddr::class,
                 \Laminas\Session\Validator\HttpUserAgent::class,
     ],
-    'navigation' => [
-        'static' => [
-            [
-                'label' => 'Home',
-                'route' => 'home',
-            ],
-            [
-                'label' => 'Login',
-                'route' => 'user',
-                'action' => 'login',
-                'resource' => 'user',
-                'privilege' => 'login',
-            ],
-            [
-                'label' => 'Logout',
-                'route' => 'user',
-                'action' => 'logout',
-                'resource' => 'user',
-                'privilege' => 'logout',
-            ],
-            [
-                'label' => 'Register',
-                'route' => 'user',
-                'action' => 'register',
-                'resource' => 'user',
-                'privilege' => 'register',
-            ],
-        ],
-    ],
+
 ];

@@ -40,13 +40,19 @@
                         aria-expanded="false"
                         aria-label="Toggle navigation"
                     >
-                     <span class="navbar-toggler-icon"></span>
+                        <span class="navbar-toggler-icon"></span>
                     </button>
-                    <a class="navbar-brand" href="<?= $this->url('home') ?>">Aurora CMS</a>
+                    <a class="navbar-brand" href="<?= $this->url('home') ?>">
+                        <img src="<?= $this->basePath('img/laminas-logo.svg') ?>" alt="Laminas">
+                        <?= $this->user->userName;?>
+                    </a>
+                    <div class="">
+                    	
+                    </div>
                 </div>
                 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                
+                Admin Layout
                 <?php 
                // var_dump($this->user);
                 $this->navigation()->setAcl($this->acl);
@@ -63,7 +69,7 @@
             <footer>
                 <p>
                     &copy; <?= date('Y') ?>
-                    <a href="http://webinertia.net/aurora/">Aurora Content Management Systems</a> Developed by Webinertia Data Systems
+                    <a href="https://getlaminas.org/">Laminas Project</a> a Series of LF Projects, LLC.
                 </p>
             </footer>
         </div>

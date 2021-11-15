@@ -6,25 +6,41 @@ use User\Model\UserTable;
 
 class ProfileController extends AbstractController
 {
+    protected $profileTable;
     public function __construct(UserTable $table)
     {
         $this->table = $table;
     }
     public function _init()
     {
+       // var_dump($this->getEvent()->getApplication()->getServiceManager());
+        $sm = $this->getEvent()->getApplication()->getServiceManager();
+        $this->profileTable = $sm->get('User\Model\ProfileTable');
+       // var_dump($this->profileTable);
+        
         if(!$this->authenticated)
         {
             $this->redirect()->toUrl('/user/login');
         }
-        parent::_init();
+        //parent::_init();
     }
-    public function indexAction()
+    public function viewAction()
     {
-        //var_dump($this->table->get);
-        var_dump($this->user);
-        //$applicatio
-        //var_dump($_SESSION['user']['details']);
-        return new ViewModel(['messages' => ['welcome' => 'Welcome back!!']]);
+        $userId = (int) $this->params()->fromRoute('id');
+        
+        switch(is_int($userId) && $userId !== 0) {
+            case true:
+                $user = $this->table->fetchUserById($userId);
+                break;
+            default:
+                $user = $this->user;
+                break;
+        }
+        // set the user in the profileTable
+        $this->profileTable->setUser($user);
+        $pData = $this->profileTable->fetchById($user->id);
+        //var_dump($pData);
+        return $this->view;
     }
     
 }

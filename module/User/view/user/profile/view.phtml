@@ -1,12 +1,13 @@
 <?php
 // module/User/view/User/User/index.phtml:
 
-$title = 'System Users';
+$title = 'Profile';
 $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <p>
-    <span><a href="<?= $this->url('user', ['action' => 'add', 'id' => 0]) ?>">Add User</a></span>
+	<?= $this->flashMessenger()->render('info'); ?>
+    <span><a href="<?= $this->url('profile', ['action' => 'edit', 'id' => $this->user->id]) ?>">Edit Profile</a></span>
 </p>
 
 <table class="table">
