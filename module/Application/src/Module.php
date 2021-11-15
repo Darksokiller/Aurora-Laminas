@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Application;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Session;
-
+use Laminas\View\HelperPluginManager;
 use Laminas\Mvc\ModuleRouteListener;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Session\SessionManager;
@@ -96,5 +96,5 @@ class Module
             },
         ];
     }
-
+   
 }

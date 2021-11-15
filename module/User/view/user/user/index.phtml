@@ -6,11 +6,18 @@ $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <p>
+	<?php 
+	if($this->acl->isAllowed($this->user, $this->user, 'user.create.new')):
+	?>
     <span><a href="<?= $this->url('user', ['action' => 'add', 'id' => 0]) ?>">Add User</a></span>
+    <?php 
+    endif;
+    ?>
 </p>
 
 <table class="table">
 <tr>
+	<th>Profile</th>
     <th>User Name</th>
     <th>Email</th>
     <th>Account Status</th>
@@ -19,6 +26,7 @@ $this->headTitle($title);
 </tr>
 <?php foreach ($users as $user) : ?>
     <tr>
+    	<td><a href="<?= $this->url('profile', ['action' => 'view', 'id' => $user->id])?>">View</a></td>
         <td><?= $this->escapeHtml($user->userName) ?></td>
         <td><?= $this->escapeHtml($user->email) ?></td>
         <?php

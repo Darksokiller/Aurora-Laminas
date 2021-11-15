@@ -25,25 +25,28 @@ class AlbumController extends AbstractController
     {
         $this->table->setAcl($this->acl);
     }
+
     public function indexAction()
     {
-        //$layout = new Layout();
-        //$view = new ViewModel();
-        var_dump($this->table->getResourceId());
-        var_dump($this->table->getAcl());
+        // $layout = new Layout();
+        // $view = new ViewModel();
+        // var_dump($this->table->getResourceId());
+        // var_dump($this->table->getAcl());
         $form = new AlbumForm();
         $form->get('submit')->setValue('Add');
         
-            $view = new ViewModel([
-                'albums' => $this->table->fetchAll(),
-            ]);
+        // $view = new ViewModel([
+        // 'albums' => $this->table->fetchAll(),
+        // ]);
+        $this->view->setVariable('albums', $this->table->fetchAll());
+        $child = new ViewModel([
+            'form' => $form
+        ]);
+        $child->setTemplate('Album/Album/form');
         
-            $child = new ViewModel(['form' => $form]);
-            $child->setTemplate('Album/Album/form');
-            
-            $view->addChild($child, 'form_template');
-           // var_dump($view);
-            return $view;
+        $this->view->addChild($child, 'form_template');
+        // var_dump($view);
+        return $this->view;
     }
     
     public function addAction()

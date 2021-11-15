@@ -190,6 +190,8 @@ class UserController extends AbstractController
         //$this->table->login($user);
         if($this->table->login($user))
         {
+            //$this->redirect()->toUrl('/user/profile/view/'. $user->id);
+            $this->flashMessenger()->addInfoMessage('Welcome back!!');
             $this->redirect()->toRoute('profile', ['id' => $user->id]);
         }
         else {

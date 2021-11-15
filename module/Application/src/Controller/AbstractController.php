@@ -37,6 +37,18 @@ class AbstractController extends AbstractActionController
         $this->baseUrl = $this->getRequest()->getBasePath();
         $this->authService = new AuthService();
         $sm = $e->getApplication()->getServiceManager();
+        
+
+        //var_dump(get_parent_class(get_called_class()));
+//         $adminParent = 'Application\Controller\AdminAbstractController';
+//         switch($adminParent === get_parent_class(get_called_class())) {
+//             case true:
+                
+//                 break;
+//             default:
+                
+//                 break;
+//         }
         $table = $sm->get('User\Model\UserTable');
         $this->acl = $sm->get('Application\Permissions\PermissionsManager');
         $this->acl = $this->acl->getAcl();
@@ -65,6 +77,7 @@ class AbstractController extends AbstractActionController
         $this->layout()->acl = $this->acl;
         $this->layout()->user = $this->user;
         $this->layout()->authenticated = $this->authenticated;
+       // $this->layout('layout/admin');
         //$this->layout()->userName = $this->user->userName;
         $this->_init();
         return parent::onDispatch($e);
