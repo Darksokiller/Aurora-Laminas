@@ -36,6 +36,7 @@ class PermissionsManager
         $this->acl->addResource('profile');
         $this->acl->addResource('project');
         $this->acl->addResource('album');
+        $this->acl->addResource('admin');
         
         $this->acl->allow('guest', null, 'view');
         $this->acl->allow('user', null, 'view');
@@ -44,6 +45,7 @@ class PermissionsManager
         $this->acl->allow('user', 'user', 'user.view.list');
         
         $this->acl->deny('user', 'user', ['register', 'login', 'user.create.new']);
+        $this->acl->deny(['guest', 'user'], 'admin', 'admin.access');
         
         $this->acl->allow('user', null, ['edit', 'delete'], new Owner());
         //$this->acl->allow('user', 'album', 'album.create');

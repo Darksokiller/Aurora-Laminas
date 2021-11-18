@@ -4,7 +4,7 @@ $title = 'Add User';
 $this->headTitle($title);
 ?>
 <?php
-$form->setAttribute('action', $this->url('user', ['action' => 'add']));
+$form->setAttribute('action', $this->url('user', ['action' => 'register']));
 $form->prepare();
 
 $this->headLink()->prependStylesheet($this->basePath('css/aurora.css'));

@@ -13,7 +13,7 @@ use Laminas\Authentication\AuthenticationService as AuthService;
 use User\Model\UserTable as Table;
 use User\Model\User as User;
 
-class AbstractController extends AbstractActionController
+abstract class AbstractController extends AbstractActionController
 {
 
     public $baseUrl;
@@ -40,15 +40,7 @@ class AbstractController extends AbstractActionController
         
 
         //var_dump(get_parent_class(get_called_class()));
-//         $adminParent = 'Application\Controller\AdminAbstractController';
-//         switch($adminParent === get_parent_class(get_called_class())) {
-//             case true:
-                
-//                 break;
-//             default:
-                
-//                 break;
-//         }
+
         $table = $sm->get('User\Model\UserTable');
         $this->acl = $sm->get('Application\Permissions\PermissionsManager');
         $this->acl = $this->acl->getAcl();
@@ -77,7 +69,6 @@ class AbstractController extends AbstractActionController
         $this->layout()->acl = $this->acl;
         $this->layout()->user = $this->user;
         $this->layout()->authenticated = $this->authenticated;
-       // $this->layout('layout/admin');
         //$this->layout()->userName = $this->user->userName;
         $this->_init();
         return parent::onDispatch($e);

@@ -5,6 +5,14 @@ $title = 'System Users';
 $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
+<?php 
+               // var_dump($this->user);
+//                 $this->navigation()->setAcl($this->acl);
+//                 $this->navigation()->setRole($this->user->role);
+//                 $this->navigation()->menu()->setUlClass('nav nav-tabs');
+//                 //$this->navigation()->menu()->setPartial('application/partials/button-menu');
+//                 echo $this->navigation()->menu()->renderPartial('Laminas\Navigation\User', 'application/partials/button-menu');
+                ?>
 <p>
 	<?php 
 	if($this->acl->isAllowed($this->user, $this->user, 'user.create.new')):

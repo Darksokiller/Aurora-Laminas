@@ -27,10 +27,11 @@ class ProfileController extends AbstractController
     public function viewAction()
     {
         $userId = (int) $this->params()->fromRoute('id');
-        
+        //var_dump($userId);
         switch(is_int($userId) && $userId !== 0) {
             case true:
                 $user = $this->table->fetchUserById($userId);
+                //var_dump($user);
                 break;
             default:
                 $user = $this->user;
@@ -38,7 +39,9 @@ class ProfileController extends AbstractController
         }
         // set the user in the profileTable
         $this->profileTable->setUser($user);
+        //var_dump($user);
         $pData = $this->profileTable->fetchById($user->id);
+        $this->view->setVariable('data', $pData);
         //var_dump($pData);
         return $this->view;
     }
