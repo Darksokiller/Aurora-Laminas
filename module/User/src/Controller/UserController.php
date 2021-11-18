@@ -85,7 +85,7 @@ class UserController extends AbstractController
             case true:
                 
                 if (0 === $id) {
-                    return $this->redirect()->toRoute('user', ['action' => 'add']);
+                    return $this->redirect()->toRoute('user', ['action' => 'edit']);
                 }
                 
                 // Retrieve the User with the specified id. Doing so raises

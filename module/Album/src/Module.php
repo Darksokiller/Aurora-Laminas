@@ -29,7 +29,7 @@ class Module implements ConfigProviderInterface
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\Album());
-                    $featureSet = new \Laminas\Db\RowGateway\Feature\FeatureSet();
+                    //$featureSet = new \Laminas\Db\RowGateway\Feature\FeatureSet();
                     return new TableGateway('album', $dbAdapter, null, $resultSetPrototype);
                     //return new TableGateway('album', $dbAdapter, new RowGatewayFeature('id'));
                 },

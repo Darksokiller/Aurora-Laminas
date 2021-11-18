@@ -75,13 +75,13 @@ class ProfileTable extends AbstractModel
     }
     public function fetchById($userId)
     {
+       // var_dump($this->tableGateway);
         $userId = (int) $userId;
         $rowset = $this->tableGateway->select(['userId' => $userId]);
         $row = $rowset->current();
         if (! $row) {
           throw new RuntimeException(sprintf('Could not find row with identifier %d', $userId));
         }
-        return $row;
         return $row;
     }
 //     public function getUser($id)

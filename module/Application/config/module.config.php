@@ -43,23 +43,56 @@ return [
                     ],
                 ],
             ],
+            'app.admin' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/app/admin[/:action]',
+                    'defaults' => [
+                        'controller' => Controller\AdminController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
         ],
     ],
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
+            Controller\AdminController::class => InvokableFactory::class,
         ],
     ],
-//     'controller_plugins' => [
-//         'aliases' => [
-//             'forbidden' => CreateHttpForbiddenModel::class,
-//             'Forbidden' => CreateHttpForbiddenModel::class,
-//             'Application\Controller\Plugin\CreateHttpForbiddenModel' => CreateHttpForbiddenModel::class,
-//         ],
-//         'factories' => [
-//             CreateHttpForbiddenModel::class => CreateHttpForbiddenModelFactory::class
-//         ],
-//     ],
+    'navigation' => [
+        'static' =>[
+            [
+                'label' => 'Home',
+                'route' => 'home',
+                'class' => 'nav-link',
+                'order' => '-10',
+            ],
+            [
+                'label' => 'Admin',
+                'route' => 'app.admin',
+                'class' => 'nav-link',
+                'resource' => 'admin',
+                'privilege' => 'admin.access',
+            ],
+        ],
+        'special' => [
+            [
+                'label' => 'Home',
+                'route' => 'home',
+                'class' => 'nav-link',
+                'order' => '-10',
+            ],
+            [
+                'label' => 'App Settings',
+                'route' => 'app.admin',
+                'class' => 'nav-link',
+                'resource' => 'admin',
+                'privilege' => 'admin.access',
+            ],
+        ],
+    ],
     'view_manager' => [
         'display_not_found_reason' => true,
         'display_exceptions'       => true,
