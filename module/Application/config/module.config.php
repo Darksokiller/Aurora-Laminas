@@ -77,7 +77,7 @@ return [
                 'privilege' => 'admin.access',
             ],
         ],
-        'special' => [
+        'admin' => [
             [
                 'label' => 'Home',
                 'route' => 'home',
