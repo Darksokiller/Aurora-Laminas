@@ -89,7 +89,7 @@ return [
                 'privilege' => 'register.view',
             ],
         ],
-        'special' => [
+        'admin' => [
             [
                 'label' => 'Admin Users',
                 'route' => 'user.admin',
