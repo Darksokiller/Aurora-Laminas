@@ -37,14 +37,17 @@ abstract class AbstractController extends AbstractActionController
         $this->baseUrl = $this->getRequest()->getBasePath();
         $this->authService = new AuthService();
         $sm = $e->getApplication()->getServiceManager();
-        
-
+        $pluginManager = $sm->get('ControllerPluginManager');
+        //var_dump($pluginManager);
+        $fm = $pluginManager->get('FlashMessenger');
+        //var_dump($fm);
         //var_dump(get_parent_class(get_called_class()));
 
         $table = $sm->get('User\Model\UserTable');
         $this->acl = $sm->get('Application\Permissions\PermissionsManager');
         $this->acl = $this->acl->getAcl();
         $this->view = new ViewModel();
+        
         
         //var_dump($sm->get('Application\Controller\Plugin\CreateHttpForbiddenModel'));
         
@@ -61,6 +64,7 @@ abstract class AbstractController extends AbstractActionController
                 ]);
                 break;
         }
+        
         //var_dump($this->user);
         $this->user->password = null;
         $this->view->user = $this->user;
