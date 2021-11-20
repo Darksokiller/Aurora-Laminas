@@ -9,9 +9,10 @@ use Laminas\View\Model\ViewModel;
 
 class IndexController extends AbstractController
 {
-    
+
     public function indexAction()
     {
+       
         //var_dump($this->view);
         return $this->view;
         //return new ViewModel();
