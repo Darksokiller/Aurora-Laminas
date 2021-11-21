@@ -2,6 +2,7 @@
 
 $title = 'Add User';
 $this->headTitle($title);
+echo $this->flashMessenger()->render('error');
 ?>
 <?php
 $form->setAttribute('action', $this->url('user', ['action' => 'register']));

@@ -23,6 +23,10 @@ abstract class AbstractModel implements ResourceInterface, ProprietaryInterface
         $this->tableGateway = $tableGateway;
         $this->_init();
     }
+    public function getAdapter()
+    {
+        return $this->tableGateway->getAdapter();
+    }
     public function _init()
     {
         return $this;
