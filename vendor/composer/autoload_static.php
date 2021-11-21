@@ -61,6 +61,10 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
         array (
             'User\\' => 5,
         ),
+        'T' => 
+        array (
+            'TrueBV\\' => 7,
+        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Php80\\' => 23,
@@ -114,6 +118,8 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
             'Laminas\\Mvc\\I18n\\' => 17,
             'Laminas\\Mvc\\' => 12,
             'Laminas\\ModuleManager\\' => 22,
+            'Laminas\\Mime\\' => 13,
+            'Laminas\\Mail\\' => 13,
             'Laminas\\Log\\' => 12,
             'Laminas\\Loader\\' => 15,
             'Laminas\\Json\\' => 13,
@@ -187,6 +193,10 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
             2 => __DIR__ . '/../..' . '/module/User/src/Filter',
             3 => __DIR__ . '/../..' . '/module/User/src/Form',
             4 => __DIR__ . '/../..' . '/module/User/src/Model',
+        ),
+        'TrueBV\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/true/punycode/src',
         ),
         'Symfony\\Polyfill\\Php80\\' => 
         array (
@@ -369,6 +379,14 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
         'Laminas\\ModuleManager\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-modulemanager/src',
+        ),
+        'Laminas\\Mime\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laminas/laminas-mime/src',
+        ),
+        'Laminas\\Mail\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laminas/laminas-mail/src',
         ),
         'Laminas\\Log\\' => 
         array (

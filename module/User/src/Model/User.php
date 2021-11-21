@@ -154,6 +154,7 @@ class User implements RoleInterface, ResourceInterface, ProprietaryInterface
                         'max' => 100,
                     ],
                 ],
+                
             ],
         ]);
         

@@ -12,7 +12,10 @@ use User\Model\UserTable;
 use User\Model\User;
 use User\Form\UserForm;
 use User\Form\LoginForm;
-use PhpParser\Node\Stmt\Switch_;
+use Laminas\Mail\Message;
+use Laminas\Mail\Transport\Smtp as SmtpTransport;
+use Laminas\Mail\Transport\SmtpOptions;
+use Laminas\Validator\Db\NoRecordExists as Validator;
 
 
 
@@ -20,7 +23,8 @@ class UserController extends AbstractController
 {
     // Add this property:
     public $table;
-    
+    const MAIL_SENDER = 'devel@webinertia.net';
+    const MAIL_PASSWORD = '**bffbGfbd88**';
     // Add this constructor:
     public function __construct(UserTable $table)
     {
@@ -38,8 +42,39 @@ class UserController extends AbstractController
     
     public function registerAction()
     {
+        //var_dump($this->table->getAdapter());
+        $now = new \DateTime();
+        $now->setTimezone(new \DateTimeZone('America/Chicago'));
+        //var_dump($now->format('j-m-Y g:i:s'));
+        //var_dump($now->getTimezone());
+       // return;
+        /**
+         * 
+         * smtp-relay.gmail.com on port 587.
+         */
+        $message = new Message();
+        $message->addTo('jsmith@webinertia.net');
+        $message->addFrom('devel@webinertia.net');
+        $message->setSubject('Did ya get that one?');
+        $message->setBody("Hey, guess what, its still working lmao");
+        
+        $transport = new SmtpTransport();
+        $options   = new SmtpOptions([
+            'name' => 'webinertia.net',
+            'host' => 'smtp-relay.gmail.com',
+            'port' => '587',
+            'connection_class'  => 'login',
+            'connection_config' => [
+                'username' => 'devel@webinertia.net',
+                'password' => self::MAIL_PASSWORD,
+                'ssl' => 'tls',
+            ],
+        ]);
+        $transport->setOptions($options);
+        $transport->send($message);
         
         $form = new UserForm();
+        //$form->setOption('dbAdapter', $this->table->getAdapter());
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
@@ -62,6 +97,15 @@ class UserController extends AbstractController
         $form->setData($request->getPost());
        // var_dump($form->getData());
         if (! $form->isValid()) {
+            return ['form' => $form];
+        }
+        $userNameValidator = new Validator(['table'   => 'user',
+            'field'   => 'userName',
+            'adapter' => $this->table->getAdapter(),]);
+        var_dump($userNameValidator->isValid($request->getPost()->userName));
+        if(!$userNameValidator->isValid($request->getPost()->userName))
+        {
+            $this->flashMessenger()->addErrorMessage('User Name is already in use Please select another');
             return ['form' => $form];
         }
         
