@@ -23,7 +23,7 @@ use Laminas\Validator\Db\NoRecordExists as Validator;
 class RegisterController extends AbstractController
 {
     const MAIL_SENDER = 'devel@webinertia.net';
-    const MAIL_PASSWORD = '**bffbGfbd88**';
+    const MAIL_PASSWORD = '';
     public $table;
     public function __construct(UserTable $table)
     {
