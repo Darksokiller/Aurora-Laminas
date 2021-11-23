@@ -229,6 +229,15 @@
                 0 => '1.0',
             ),
         ),
+        'laminas/laminas-captcha' => array(
+            'pretty_version' => '2.11.0',
+            'version' => '2.11.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laminas/laminas-captcha',
+            'aliases' => array(),
+            'reference' => '6b0b98d388b713119cbb5788ea0b90cd6e63513a',
+            'dev_requirement' => false,
+        ),
         'laminas/laminas-cli' => array(
             'pretty_version' => '1.2.0',
             'version' => '1.2.0.0',
@@ -434,6 +443,15 @@
             'install_path' => __DIR__ . '/../laminas/laminas-mail',
             'aliases' => array(),
             'reference' => '70c3476913c74e9befd782ab665ad1b9ebac556e',
+            'dev_requirement' => false,
+        ),
+        'laminas/laminas-math' => array(
+            'pretty_version' => '3.4.0',
+            'version' => '3.4.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laminas/laminas-math',
+            'aliases' => array(),
+            'reference' => '79f6453a47a5774cf3736c5c66cb4818486681da',
             'dev_requirement' => false,
         ),
         'laminas/laminas-mime' => array(
@@ -1302,6 +1320,12 @@
             'dev_requirement' => false,
             'replaced' => array(
                 0 => '^2.12.0',
+            ),
+        ),
+        'zendframework/zend-math' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '^3.2.0',
             ),
         ),
         'zendframework/zend-mvc-form' => array(

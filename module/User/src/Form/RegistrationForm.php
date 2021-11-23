@@ -2,22 +2,31 @@
 namespace User\Form;
 
 use Laminas\Form\Form;
+use Laminas\Form\Fieldset;
 
-class LoginForm extends Form
+use Laminas\Validator\Db\Validator\NoRecordExists;
+
+class RegistrationForm extends Form
 {
 
     public function __construct($name = null)
     {
         // We will ignore the name provided to the constructor
-        parent::__construct('Login');
+        parent::__construct('Registration');
         
-        $this->add([
+        $fieldset = new Fieldset();
+        
+        $fieldset->add([
             'name' => 'email',
             'type' => 'text',
             'options' => [
                 'label' => 'Email'
             ]
         ]);
+        
+        $this->add($fieldset, ['name' => 'somefieldset']);
+        
+        //$this->add();
 
         $this->add([
             'name' => 'password',

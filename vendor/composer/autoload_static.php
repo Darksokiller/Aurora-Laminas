@@ -119,6 +119,7 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
             'Laminas\\Mvc\\' => 12,
             'Laminas\\ModuleManager\\' => 22,
             'Laminas\\Mime\\' => 13,
+            'Laminas\\Math\\' => 13,
             'Laminas\\Mail\\' => 13,
             'Laminas\\Log\\' => 12,
             'Laminas\\Loader\\' => 15,
@@ -142,6 +143,7 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
             'Laminas\\ComponentInstaller\\' => 27,
             'Laminas\\Code\\' => 13,
             'Laminas\\Cli\\' => 12,
+            'Laminas\\Captcha\\' => 16,
             'Laminas\\Cache\\Storage\\Adapter\\' => 30,
             'Laminas\\Cache\\' => 14,
             'Laminas\\Authentication\\' => 23,
@@ -384,6 +386,10 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-mime/src',
         ),
+        'Laminas\\Math\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laminas/laminas-math/src',
+        ),
         'Laminas\\Mail\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-mail/src',
@@ -475,6 +481,10 @@ class ComposerStaticInit889e1047675131ed1c4cf58ef4a7411f
         'Laminas\\Cli\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-cli/src',
+        ),
+        'Laminas\\Captcha\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laminas/laminas-captcha/src',
         ),
         'Laminas\\Cache\\Storage\\Adapter\\' => 
         array (
