@@ -2,6 +2,8 @@
 namespace User\Form;
 
 use Laminas\Form\Form;
+use Laminas\Form\Element;
+use Laminas\Form\Element\Captcha;
 
 class UserForm extends Form
 {
@@ -45,6 +47,27 @@ class UserForm extends Form
             'type' => 'password',
             'options' => [
                 'label' => 'Confirm Password'
+            ]
+        ]);
+        $this->add([
+            'name' => 'captcha',
+            'type' => Element\Captcha::class,
+            'options' => [
+                'label' => 'Rewrite Captcha text:',
+                'captcha' => new \Laminas\Captcha\Image([
+                    'name' => 'myCaptcha',
+                    'messages' => array(
+                        'badCaptcha' => 'incorrectly rewritten image text'
+                    ),
+                    'wordLen' => 5,
+                    'timeout' => 300,
+                    'font' => $_SERVER['DOCUMENT_ROOT'] . '/fonts/arbli.ttf',
+                    'imgDir' => $_SERVER['DOCUMENT_ROOT'] . '/img/captcha/',
+                    'imgUrl' => '/img/captcha/',
+                    'lineNoiseLevel' => 4,
+                    'width' => 200,
+                    'height' => 70
+                ]),
             ]
         ]);
         $this->add([

@@ -37,6 +37,20 @@ return [
                     ],
                 ],
             ],
+            'user.register' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route' => '/user/register[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\RegisterController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
             'user.admin' => [
                 'type'    => Segment::class,
                 'options' => [
@@ -82,9 +96,9 @@ return [
             ],
             [
                 'label' => 'Register',
-                'route' => 'user',
+                'route' => 'user.register',
                 'class' => 'nav-link',
-                'action' => 'register',
+                'action' => 'index',
                 'resource' => 'user',
                 'privilege' => 'register.view',
             ],

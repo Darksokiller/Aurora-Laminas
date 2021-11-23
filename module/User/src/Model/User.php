@@ -7,11 +7,13 @@ use Laminas\Filter\ToInt;
 use Laminas\InputFilter\InputFilter;
 use Laminas\InputFilter\InputFilterInterface;
 use Laminas\Validator\StringLength;
+use Laminas\Validator\Db\NoRecordExists;
 use User\Filter\PasswordFilter;
 use Laminas\Permissions\Acl\ProprietaryInterface;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Permissions\Acl\Role\RoleInterface;
 use Laminas\Filter\StringToLower;
+use Laminas\Validator\Identical;
 
 class User implements RoleInterface, ResourceInterface, ProprietaryInterface
 {
@@ -24,6 +26,7 @@ class User implements RoleInterface, ResourceInterface, ProprietaryInterface
     public $verified;
     public $password;
     public $role;
+    public $dbAdapter;
     
     private $inputFilter;
     
@@ -78,6 +81,23 @@ class User implements RoleInterface, ResourceInterface, ProprietaryInterface
             'verified' => $this->verified,
         ];
     }
+    
+    /**
+     * @return the $dbAdapter
+     */
+    public function getDbAdapter()
+    {
+        return $this->dbAdapter;
+    }
+
+    /**
+     * @param field_type $dbAdapter
+     */
+    public function setDbAdapter($dbAdapter)
+    {
+        $this->dbAdapter = $dbAdapter;
+    }
+
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
         throw new DomainException(sprintf(
@@ -153,6 +173,12 @@ class User implements RoleInterface, ResourceInterface, ProprietaryInterface
                         'min' => 1,
                         'max' => 100,
                     ],
+                    'name' => NoRecordExists::class,
+                    'options' => [
+                        'table' => $this->getResourceId(),
+                        'field' => 'userName',
+                        'dbAdapter' => $this->getDbAdapter(),
+                    ],
                 ],
                 
             ],
@@ -173,6 +199,12 @@ class User implements RoleInterface, ResourceInterface, ProprietaryInterface
                         'min' => 1,
                         'max' => 100,
                     ],
+                    'name' => NoRecordExists::class,
+                    'options' => [
+                        'table' => $this->getResourceId(),
+                        'field' => 'email',
+                        'dbAdapter' => $this->getDbAdapter(),
+                    ],
                 ],
             ],
         ]);
@@ -192,6 +224,32 @@ class User implements RoleInterface, ResourceInterface, ProprietaryInterface
                         'encoding' => 'UTF-8',
                         'min' => 1,
                         'max' => 100,
+                    ],
+                ],
+            ],
+        ]);
+        
+        $inputFilter->add([
+            'name' => 'conf_password',
+            'required' => true,
+            'filters' => [
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
+            ],
+            'validators' => [
+                [
+                    'name' => StringLength::class,
+                    'options' => [
+                        'encoding' => 'UTF-8',
+                        'min' => 1,
+                        'max' => 100,
+                    ],
+                    'name' => Identical::class,
+                    'options' => [
+                        'token' => 'password',
+                        'messages' => [
+                            \Laminas\Validator\Identical::NOT_SAME => 'Passwords are not the same',
+                        ],
                     ],
                 ],
             ],

@@ -1,14 +1,14 @@
 <?php
 namespace Application\Model;
 
-use RuntimeException;
-use Laminas\Session;
-use User\Model\User as User;
+//use RuntimeException;
+//use Laminas\Session;
+//use User\Model\User as User;
 use Laminas\Db\TableGateway\TableGatewayInterface;
-use Laminas\Validator\EmailAddress as emailValidater;
-use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter as AuthAdapter;
-use Laminas\Authentication\AuthenticationService as AuthService;
-use Laminas\Authentication\Result;
+//use Laminas\Validator\EmailAddress as emailValidater;
+//use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter as AuthAdapter;
+//use Laminas\Authentication\AuthenticationService as AuthService;
+//use Laminas\Authentication\Result;
 use Application\Permissions\PermissionsManager as Acl;
 use Laminas\Permissions\Acl\ProprietaryInterface;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
@@ -61,4 +61,3 @@ abstract class AbstractModel implements ResourceInterface, ProprietaryInterface
 
     
 }
-

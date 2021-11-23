@@ -28,6 +28,10 @@ abstract class AbstractController extends AbstractActionController
 
     public $authenticated = false;
     
+    public $systemMessage = null;
+    
+    public $messageType = null;
+    
     protected $action;
 
     protected $sessionContainer;
@@ -73,12 +77,16 @@ abstract class AbstractController extends AbstractActionController
         $this->layout()->acl = $this->acl;
         $this->layout()->user = $this->user;
         $this->layout()->authenticated = $this->authenticated;
+        $this->layout()->systemMessage = $this->systemMessage;
+        $this->layout()->messageType = $this->messageType;
         //$this->layout()->userName = $this->user->userName;
         $this->_init();
         return parent::onDispatch($e);
     }
 
     public function _init()
-    {}
+    {
+        return $this;
+    }
 
 }
