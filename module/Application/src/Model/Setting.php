@@ -13,6 +13,7 @@ class Setting
         $this->variable = !empty($data['variable']) ? $data['variable'] : null;
         $this->value = !empty($data['value']) ? $data['value'] : null;
         $this->settingType = !empty($data['value']) ? $data['value'] : null;
+        $this->label = !empty($data['label']) ? $data['label'] : null;
     }
 }
 

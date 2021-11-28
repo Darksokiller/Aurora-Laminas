@@ -3,12 +3,14 @@ namespace Application\Permissions;
 use Laminas\Permissions\Acl\Acl;
 use Laminas\Permissions\Acl\Role\GenericRole as Role;
 use Laminas\Permissions\Acl\Assertion\OwnershipAssertion as Owner;
-
+/*
+ * @var $acl Laminas\Permissions\Acl\Acl
+ */
 class PermissionsManager
 {
     /**
      * 
-     * @var $acl Laminas\Permissions\Acl\Acl
+     * @var Acl
      */
     public $acl;
     private $roles = ['superAdmin', 'admin', 'moderator', 'user', 'guest'];
@@ -38,6 +40,7 @@ class PermissionsManager
         $this->acl->addResource('album');
         $this->acl->addResource('admin');
         $this->acl->addResource('settings');
+        $this->acl->addResource('mailService');
         
         $this->acl->allow('guest', null, 'view');
         $this->acl->allow('user', null, 'view');
