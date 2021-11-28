@@ -58,6 +58,5 @@ abstract class AbstractModel implements ResourceInterface, ProprietaryInterface
         // TODO Auto-generated method stub
         
     }
-
     
 }

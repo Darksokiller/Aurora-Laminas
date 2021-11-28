@@ -23,7 +23,7 @@ abstract class AbstractAdminController extends AbstractController implements Res
         if(!$this->acl->isAllowed($this->user, $this, 'admin.access'))
         {
             $this->messageType = 'warning';
-            $this->flashMessenger()->addWarningMessage('You do not have sufficient privileges to access the requested area.');
+           // $this->flashMessenger()->addWarningMessage('You do not have sufficient privileges to access the requested area.');
             $this->redirect()->toRoute('forbidden');
         }
         $adminParent = 'Application\Controller\AbstractAdminController';

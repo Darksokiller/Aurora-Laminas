@@ -46,10 +46,20 @@ return [
             'app.admin' => [
                 'type'    => Segment::class,
                 'options' => [
-                    'route'    => '/app/admin[/:action]',
+                    'route'    => '/cms/admin[/:action]',
                     'defaults' => [
                         'controller' => Controller\AdminController::class,
                         'action'     => 'index',
+                    ],
+                ],
+            ],
+            'app.admin.add.setting' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/cms/admin/addsetting',
+                    'defaults' => [
+                        'controller' => Controller\AdminController::class,
+                        'action'     => 'addsetting',
                     ],
                 ],
             ],
