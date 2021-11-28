@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace Application;
+use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Session;
 use Laminas\View\HelperPluginManager;
@@ -14,7 +15,13 @@ use Laminas\Session\Container;
 use Laminas\Session\Validator;
 use Laminas\Permissions\Acl\Acl;
 use Application\Permissions\PermissionsManager;
+use Application\Model\SettingsTable;
 use Laminas\Mvc\Application;
+use Laminas\Db\TableGateway\TableGateway;
+use Laminas\Db\RowGateway\Feature\FeatureSet;
+use Laminas\Db\ResultSet\ResultSet;
+use Application\Model\Setting;
+use Laminas\Db\TableGateway\Feature\RowGatewayFeature;
 
 class Module
 {
@@ -94,6 +101,14 @@ class Module
             Application\Permissions\PermissionsManager::class => function($container) {
                 return new Application\Permissions\PermissionsManager(new Acl());
             },
+            'factories' => [
+                Model\SettingsTableGateway::class => function ($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    //$resultSetPrototype = new ResultSet();
+                    //$resultSetPrototype->setArrayObjectPrototype(new Model\Setting());
+                    return new SettingsTable(new TableGateway('settings', $dbAdapter, new RowGatewayFeature('id')));
+                },
+            ],
         ];
     }
    

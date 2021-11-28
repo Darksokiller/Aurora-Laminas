@@ -1,6 +1,7 @@
 <?php
 namespace User\Controller;
 use User\Model\UserTable;
+use Application\Form\SettingsForm;
 use Application\Controller\AbstractAdminController;
 
 class AdminController extends AbstractAdminController
@@ -13,6 +14,7 @@ class AdminController extends AbstractAdminController
 
     public function indexAction()
     {
-        var_dump($this->user);
+        //var_dump($this->user);
+        
     }
 }

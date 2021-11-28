@@ -51,6 +51,20 @@ return [
                     ],
                 ],
             ],
+            'user.verify' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route' => '/user/register/verify[/:token]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\RegisterController::class,
+                        'action'     => 'verify',
+                    ],
+                ],
+            ],
             'user.admin' => [
                 'type'    => Segment::class,
                 'options' => [
@@ -73,10 +87,16 @@ return [
                 'label' => 'Users',
                 'route' => 'user',
                 'class' => 'nav-link',
-                'controller' => 'user',
-                'action' => 'index',
                 'resource' => 'user',
                 'privilege' => 'user.view.list',
+            ],
+            [
+                'label' => 'Profile',
+                'route' => 'profile',
+                'class' => 'nav-link',
+                'action' => 'view',
+                'resource' => 'user',
+                'privilege' => 'view',
             ],
             [
                 'label' => 'Login',
@@ -121,16 +141,6 @@ return [
                 'resource' => 'user',
                 'privilege' => 'logout',
                 'order' => 100,
-            ],
-        ],
-        'user' => [
-            [
-                'label' => 'Profile',
-                'route' => 'profile',
-                'class' => 'nav-link',
-                'action' => 'view',
-                'resource' => 'user',
-                'privilege' => 'view',
             ],
         ],
     ],

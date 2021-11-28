@@ -15,15 +15,13 @@ use Laminas\Validator\Db\NoRecordExists as Validator;
 
 
 /**
- * {0}
+ * RegisterController
  * 
- * @author
- * @version 
+ * @author Joey Smith
+ * @version 1.0 Alpha 1.0
  */
 class RegisterController extends AbstractController
 {
-    const MAIL_SENDER = 'devel@webinertia.net';
-    const MAIL_PASSWORD = '';
     public $table;
     public function __construct(UserTable $table)
     {
@@ -34,53 +32,48 @@ class RegisterController extends AbstractController
 	 */
     public function indexAction()
     {
-//         $regForm = new RegistrationForm();
-//         return['regForm'=> $regForm];
-        
+        if($this->appSettings['disableRegistration']) {
+           return $this->view; 
+        }
         $form = new UserForm();
-        //$form->setOption('dbAdapter', $this->table->getAdapter());
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
         
         if (! $request->isPost()) {
+            // Initial page load, send them the form
             return $this->view->setVariable('form', $form);
-           // return ['form' => $form];
         }
-        /** does the passwords match? if not show them the form again without the passwords
-         * evenutally need to replace this with a chained filter or validator
-         */
+        // if weve made it to here then its a post request
         $post = $request->getPost();
-        //var_dump($post);
-//         if($post['password'] !== $post['conf_password'])
-//         {
-//             return ['form' => $form];
-//         }
-        
+        // we have to have a new one of these so we can hydrate it and call the dbadapter for the validators
         $user = new User();
         $user->setDbAdapter($this->table->getAdapter());
         $form->setInputFilter($user->getInputFilter());
         $form->setData($request->getPost());
-        // var_dump($form->getData());
+        // Is the posted form data valid? if not send them the form back and the problems 
+        // reported by the filters and validators
         if (! $form->isValid()) {
             return ['form' => $form];
         }
-
-        //var_dump($this->table->getAdapter());
+        // at this point the form has posted and were ready to kick this off
         $now = new \DateTime();
+        // set the time zone to central this will need replaced by a setting from the settings table
         $now->setTimezone(new \DateTimeZone('America/Chicago'));
-        //var_dump($now->format('j-m-Y g:i:s'));
-        //var_dump($now->getTimezone());
-        // return;
+        // time format is 02/13/1975
+        $now->format('j-m-Y g:i:s');
+
         /**
          *
          * smtp-relay.gmail.com on port 587.
          */
+        //$post['email'] = 'shelleyworsham@gmail.com';
         $message = new Message();
-        $message->addTo('jsmith@webinertia.net');
-        $message->addFrom('devel@webinertia.net');
-        $message->setSubject('Did ya get that one?');
-        $message->setBody("Hey, guess what, its still working lmao");
+        $message->addTo($post['email']);
+        // This email must match the connection_config key in the options below
+        $message->addFrom($this->appSettings['smtpSender']);
+        $message->setSubject($this->appSettings['siteName'] . ' account verification');
+        $message->setBody("Please click the link below to verify your account");
         
         $transport = new SmtpTransport();
         $options   = new SmtpOptions([
@@ -89,8 +82,8 @@ class RegisterController extends AbstractController
             'port' => '587',
             'connection_class'  => 'login',
             'connection_config' => [
-                'username' => 'devel@webinertia.net',
-                'password' => self::MAIL_PASSWORD,
+                'username' => $this->appSettings['smtpSender'],
+                'password' => $this->appSettings['smtpSenderPasswd'],
                 'ssl' => 'tls',
             ],
         ]);
@@ -101,5 +94,9 @@ class RegisterController extends AbstractController
         $user->exchangeArray($form->getData());
         $this->table->saveUser($user);
         return $this->redirect()->toRoute('user');
+    }
+    public function verifyAction()
+    {
+        $token = $this->params('token');
     }
 }

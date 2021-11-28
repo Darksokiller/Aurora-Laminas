@@ -11,7 +11,7 @@ class PermissionsManager
      * @var $acl Laminas\Permissions\Acl\Acl
      */
     public $acl;
-    private $roles = ['superAdmin', 'admin','moderator', 'user', 'guest'];
+    private $roles = ['superAdmin', 'admin', 'moderator', 'user', 'guest'];
     
     public function __construct(Acl $acl) {
         $this->acl = $acl;
@@ -29,7 +29,7 @@ class PermissionsManager
         $this->acl->addRole($guest);
         $this->acl->addRole(new Role('user', $guest));
         $this->acl->addRole(new Role('moderator', 'user'));
-        $this->acl->addRole(new Role('admin', 'moderator'));
+        $this->acl->addRole(new Role('admin'));
         $this->acl->addRole(new Role('superAdmin', 'admin'));
         
         $this->acl->addResource('user');
@@ -37,24 +37,31 @@ class PermissionsManager
         $this->acl->addResource('project');
         $this->acl->addResource('album');
         $this->acl->addResource('admin');
+        $this->acl->addResource('settings');
         
         $this->acl->allow('guest', null, 'view');
         $this->acl->allow('user', null, 'view');
         $this->acl->allow('guest', 'user', ['register.view', 'login.view']);
         $this->acl->allow('user', 'user', 'logout');
         $this->acl->allow('user', 'user', 'user.view.list');
+
         
         $this->acl->deny('user', 'user', ['register', 'login', 'user.create.new']);
+        
         $this->acl->deny(['guest', 'user'], 'admin', 'admin.access');
         
         $this->acl->allow('user', null, ['edit', 'delete'], new Owner());
-        //$this->acl->allow('user', 'album', 'album.create');
-        //$this->acl->allow('user', 'user', 'edit', new Owner());
-        //$this->acl->allow('user', 'profile', 'edit', new Owner());
-        //$this->acl->allow('user', 'project', 'edit', new Owner());
+        $this->acl->allow('user', 'album', 'album.create');
+        $this->acl->allow('user', 'user', 'edit', new Owner());
+        $this->acl->allow('user', 'profile', 'edit', new Owner());
+        $this->acl->allow('user', 'project', 'edit', new Owner());
+        $this->acl->allow('admin', 'admin', ['admin.access', 'admin.settings']);
         $this->acl->allow('admin');
+        
+        //$this->acl->deny('admin', 'user', ['register', 'login']);
+        $this->acl->deny('admin', 'admin', 'admin.add.setting');
         $this->acl->allow('superAdmin');
-        $this->acl->deny(['admin', 'superAdmin'], 'user', ['register.view', 'login.view']);
+        //$this->acl->deny(['admin', 'superAdmin'], 'user', ['register.view', 'login.view']);
         
         return $this;
     }
