@@ -97,6 +97,7 @@ class RegisterController extends AbstractController
     }
     public function verifyAction()
     {
+        $mailer = $this->getEvent()->getApplication()->getServiceManager()->get('Application\Utilities\Mailer');
         $token = $this->params('token');
     }
 }

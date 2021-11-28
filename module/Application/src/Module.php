@@ -22,6 +22,7 @@ use Laminas\Db\RowGateway\Feature\FeatureSet;
 use Laminas\Db\ResultSet\ResultSet;
 use Application\Model\Setting;
 use Laminas\Db\TableGateway\Feature\RowGatewayFeature;
+use Application\Utilities\Mailer;
 
 class Module
 {
@@ -107,6 +108,9 @@ class Module
                     //$resultSetPrototype = new ResultSet();
                     //$resultSetPrototype->setArrayObjectPrototype(new Model\Setting());
                     return new SettingsTable(new TableGateway('settings', $dbAdapter, new RowGatewayFeature('id')));
+                },
+                Utilities\Mailer::class => function($container) {
+                    return new Mailer($container);
                 },
             ],
         ];
