@@ -63,7 +63,7 @@ class UserForm extends Form
                     'timeout' => 300,
                     'font' => $_SERVER['DOCUMENT_ROOT'] . '/fonts/arbli.ttf',
                     'imgDir' => $_SERVER['DOCUMENT_ROOT'] . '/modules/user/img/captcha/',
-                    'imgUrl' => '/img/captcha/',
+                    'imgUrl' => '/modules/user/img/captcha/',
                     'lineNoiseLevel' => 4,
                     'width' => 200,
                     'height' => 70
