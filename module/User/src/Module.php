@@ -9,6 +9,7 @@ use User\Model\User;
 use User\Model\UserTable;
 use User\Model\Profile;
 use User\Model\ProfileTable;
+use Application\Event\LogEvents;
 
 
 class Module implements ConfigProviderInterface
@@ -17,6 +18,7 @@ class Module implements ConfigProviderInterface
     {
         return include __DIR__ . '/../config/module.config.php';
     }
+    public function onBootstrap($e) {}
     public function getServiceConfig()
     {
        

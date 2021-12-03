@@ -4,14 +4,19 @@ use Application\Model\AbstractModel;
 use RuntimeException;
 use Laminas\Session;
 use User\Model\User as User;
+use Application\Model\LoggableEntity;
 use Laminas\Db\TableGateway\TableGatewayInterface;
 use Laminas\Validator\EmailAddress as emailValidater;
 use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter as AuthAdapter;
 use Laminas\Authentication\AuthenticationService as AuthService;
 use Laminas\Authentication\Result;
+use Laminas\EventManager\EventManager;
+use Laminas\EventManager\EventManagerAwareInterface;
+use Laminas\EventManager\EventManagerInterface;
 
-class UserTable extends AbstractModel
+class UserTable extends AbstractModel implements EventManagerAwareInterface
 {
+    protected $events;
 
     public function login(User $user)
     {
@@ -73,6 +78,14 @@ class UserTable extends AbstractModel
         
         //die();
     }
+    public function test($userId, $message, $priority, $log)
+    {
+        //var_dump(__FUNCTION__);
+        $params = compact('userId', 'message', 'priority');
+        //$log->debug($this->events);
+        $log->debug('debug message');
+        $this->getEventManager()->trigger(__FUNCTION__, $this, $params);
+    }
     public function fetchAll()
     {
         return $this->tableGateway->select();
@@ -133,8 +146,23 @@ class UserTable extends AbstractModel
         return $row;
     }
     
-    public function saveUser(User $user)
+    public function save(User $user)
     {
+        $log = [
+            'message' => 'User',
+            'extra' => [
+                'userId' => $user->id,
+                
+            ],
+        ];
+        $this->getEventManager()->trigger(__FUNCTION__, $this, $log);
+        //var_dump($user);
+        
+       // die(__FILE__);
+        if($user instanceof User)
+        {
+            $data = $user->getArrayCopy();
+        }
         $data = [
             'userName' => $user->userName,
             'email' => $user->email,
@@ -145,6 +173,8 @@ class UserTable extends AbstractModel
         
         if ($id === 0) {
             $this->tableGateway->insert($data);
+            $data = new User($data);
+           // parent::save($data);
             return;
         }
         
@@ -163,6 +193,30 @@ class UserTable extends AbstractModel
     public function deleteUser($id)
     {
         $this->tableGateway->delete(['id' => (int) $id]);
+    }
+    /**
+     * {@inheritDoc}
+     * @see \Laminas\EventManager\EventManagerAwareInterface::setEventManager()
+     */
+    public function setEventManager(EventManagerInterface $events)
+    {
+        $events->setIdentifiers([
+            __CLASS__,
+            get_class($this),
+        ]);
+        $this->events = $events;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Laminas\EventManager\EventsCapableInterface::getEventManager()
+     */
+    public function getEventManager()
+    {
+        if (! $this->events) {
+            $this->setEventManager(new EventManager());
+        }
+        return $this->events;
     }
 }
 ?>

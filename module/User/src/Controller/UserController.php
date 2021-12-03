@@ -93,7 +93,7 @@ class UserController extends AbstractController
                 }
                 
                 try {
-                    $this->table->saveUser($user);
+                    $this->table->save($user);
                 } catch (\Exception $e) {
                 }
                 

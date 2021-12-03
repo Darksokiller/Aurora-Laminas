@@ -5,9 +5,9 @@ $this->headTitle($title);
 echo $this->flashMessenger()->render('error');
 ?>
 <?php 
-if($this->appSettings['disableRegistration']):
+if($this->appSettings->disableRegistration):
 ?>
-	<p>Registration is currently disabled. Please contact the site administrator for assistance. <a href="mailto:<?=$this->appSettings['appContactEmail'];?>">Email Administrator</a></p>
+	<p>Registration is currently disabled. Please contact the site administrator for assistance. <a href="mailto:<?=$this->appSettings->appContactEmail; ?>">Email Administrator</a></p>
 <?php 
 else:
 ?>

@@ -14,13 +14,7 @@ use Laminas\Session;
 
 return [
     // ...
-    'db' => [
-        'driver' => 'Pdo',
-        'dsn'    => 'mysql:dbname=aurora-laminas;host=localhost;charset=utf8',
-        //'dbname' => 'aurora-laminas',
-        'username' => 'aurora',
-        'password' => 'aurora'
-    ],
+
     'session' => [
 //         'config' => [
 //             'class' => \User\Model\UsersSessionConfig::class,
