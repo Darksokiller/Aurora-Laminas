@@ -45,9 +45,8 @@ abstract class AbstractController extends AbstractActionController
         $this->baseUrl = $this->getRequest()->getBasePath();
         $this->authService = new AuthService();
         $sm = $e->getApplication()->getServiceManager();
-        //$this->appSettings = $sm->get('Model\SettingsTableGateway');
-        $settings = $sm->get('Application\Model\SettingsTableGateway');
-        $this->appSettings = $settings->fetchAll();
+        //$settings = $sm->get('Application\Model\SettingsTableGateway');
+        $this->appSettings = $sm->get('AuroraSettings');
         //var_dump($this->appSettings);
         $pluginManager = $sm->get('ControllerPluginManager');
         //var_dump($pluginManager);

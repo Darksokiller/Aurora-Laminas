@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Application;
 use Laminas\Db\Adapter\AdapterInterface;
+use Laminas\Db\Adapter\Adapter as dbAdapter;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Session;
 use Laminas\View\HelperPluginManager;
@@ -23,6 +24,18 @@ use Laminas\Db\ResultSet\ResultSet;
 use Application\Model\Setting;
 use Laminas\Db\TableGateway\Feature\RowGatewayFeature;
 use Application\Utilities\Mailer;
+use Laminas\Log\Logger;
+use Laminas\Log\Filter\Priority;
+use Laminas\Log\LoggerAbstractServiceFactory;
+use Laminas\Log\Writer\Db;
+use Laminas\Log\Writer\FirePhp;
+use Laminas\Log\Formatter\Db as DbFormatter;
+use Laminas\Log\Formatter\Json;
+use Laminas\Log\Formatter\FirePhp as FireBugformatter;
+use Laminas\EventManager\SharedEventManager;
+use Laminas\EventManager\Event;
+use Application\Event\LogEvents;
+use Laminas\Config\Config;
 
 class Module
 {
@@ -33,11 +46,51 @@ class Module
         return $config;
     }
 
+
     public function onBootstrap($e)
     {
+        $this->bootstrapSettings($e);
         $this->bootstrapSession($e);
+        $this->bootstrapLogging($e);
     }
-    
+    public function bootstrapSettings($e)
+    {
+        $sm = $e->getApplication()->getServiceManager();
+        $settings = $sm->get('Application\Model\SettingsTableGateway');
+        $handler = new Config($settings->fetchall());
+        $sm->setService('AuroraSettings', $handler);
+        date_default_timezone_set($handler->timeZone);
+    }
+    /*
+     * @var $e Laminas\\Mvc\Event
+     */
+    public function bootstrapLogging($e)
+    {
+        $sm = $e->getapplication()->getServiceManager();
+        $settings = $sm->get('AuroraSettings');
+        $config = $sm->get('config');
+
+        $writer = new Db(new dbAdapter($config['db']), 'log');
+        $firePhpWriter = new FirePhp();
+        $debugFilter = new Priority(Logger::DEBUG);
+        $firePhpWriter->addFilter($debugFilter);
+        if($this->settings->enableFirebugDebug)
+        {
+            $writer->addFilter($debugFilter);
+        }
+        
+        
+        $dbFormatter = new DbFormatter();
+        $dbFormatter->setDateTimeFormat($settings->timeFormat);
+        
+        $writer->setFormatter($dbFormatter);
+        
+        $logger = $sm->get('Laminas\Log\Logger');
+        $logger->addWriter($writer);
+        $logger->addWriter($firePhpWriter);
+        Logger::registerErrorHandler($logger);
+        
+    }
     public function bootstrapSession($e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
@@ -109,9 +162,11 @@ class Module
                     //$resultSetPrototype->setArrayObjectPrototype(new Model\Setting());
                     return new SettingsTable(new TableGateway('settings', $dbAdapter, new RowGatewayFeature('id')));
                 },
-                Utilities\Mailer::class => function($container) {
-                    return new Mailer($container);
-                },
+//                 Utilities\Mailer::class => function($container) {
+//                     $mailer = new Mailer($container->get('SharedEventManager'));
+//                     $mailer->setEventManager($container->get('EventManager'));
+//                     return $mailer;
+//                 },
             ],
         ];
     }

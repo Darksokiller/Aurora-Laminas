@@ -14,8 +14,9 @@ use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Permissions\Acl\Role\RoleInterface;
 use Laminas\Filter\StringToLower;
 use Laminas\Validator\Identical;
+use Application\Model\LoggableEntity;
 
-class User implements RoleInterface, ResourceInterface, ProprietaryInterface
+class User implements RoleInterface, ResourceInterface, ProprietaryInterface, LoggableEntity
 {
     protected $resourceId = 'user';
     public $id;
@@ -29,6 +30,13 @@ class User implements RoleInterface, ResourceInterface, ProprietaryInterface
     public $dbAdapter;
     
     private $inputFilter;
+    public function __construct($data = null)
+    {
+        if(is_array($data))
+        {
+            return $this->exchangeArray($data);
+        }
+    }
     
     public function exchangeArray(array $data)
     {

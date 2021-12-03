@@ -2,18 +2,34 @@
 namespace Application\Model;
 use RuntimeException;
 use Application\Model\AbstractModel;
+use Application\Model\LoggableEntity;
+use Laminas\Db\TableGateway\TableGateway;
 use Application\Permissions\PermissionsManager as Acl;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Db\Sql\Select;
 use PhpParser\Node\Stmt\TryCatch;
 
-class SettingsTable extends AbstractModel
+class SettingsTable 
 {
     protected $tableGateway;
     public $acl;
     protected $resourceId = 'settings';
     
-
+    public function __construct(TableGateway $tableGateway)
+    {
+        $this->tableGateway = $tableGateway;
+        //$this->_init();
+    }
+    public function fetchForBootstrap()
+    {
+        $namespace = 'aurora';
+        $data = [];
+        $rowset = $this->tableGateway->select();
+        foreach ($rowset as $row){
+            $data[$namespace]["$row->variable"] = $row->value;
+        }
+        return $data;
+    }
     public function fetchAll()
     {
          $data = [];
