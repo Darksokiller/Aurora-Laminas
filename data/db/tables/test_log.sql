@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Dec 04, 2021 at 02:44 AM
+-- Generation Time: Dec 03, 2021 at 02:06 PM
 -- Server version: 5.7.31
 -- PHP Version: 7.4.9
 
@@ -24,37 +24,15 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `log`
+-- Table structure for table `test_log`
 --
 
-DROP TABLE IF EXISTS `log`;
-CREATE TABLE IF NOT EXISTS `log` (
+DROP TABLE IF EXISTS `test_log`;
+CREATE TABLE IF NOT EXISTS `test_log` (
   `logId` int(11) NOT NULL AUTO_INCREMENT,
-  `extra_userId` int(11) DEFAULT NULL,
-  `fileId` int(11) NOT NULL DEFAULT '0',
-  `userName` varchar(255) DEFAULT NULL,
-  `timeStamp` varchar(255) NOT NULL,
-  `priorityName` varchar(20) NOT NULL,
-  `priority` int(1) NOT NULL,
-  `message` longtext NOT NULL,
-  `extra_referenceId` tinytext,
-  `extra_errno` tinytext,
-  `extra_file` text,
-  `extra_line` text,
-  `extra_trace` text,
-  PRIMARY KEY (`logId`),
-  KEY `userId` (`extra_userId`)
+  `log` json NOT NULL,
+  PRIMARY KEY (`logId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `log`
---
-ALTER TABLE `log`
-  ADD CONSTRAINT `log_ibfk_1` FOREIGN KEY (`extra_userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

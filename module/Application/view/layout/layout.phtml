@@ -7,11 +7,13 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <?= $this->headTitle('Aurora CMS')->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?= $this->headTitle($this->appSettings->appName)->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?= $this->headMeta()
+            ->prependName('keywords', $this->appSettings->seoKeyWords)
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
             ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+            
         ?>
 
         <!-- Le styles -->
@@ -78,7 +80,7 @@
             <footer>
                 <p>
                     &copy; <?= date('Y') ?>
-                    <a href="http://webinertia.net/aurora/">Aurora Content Management Systems</a> | Developed by Webinertia Data Systems
+                    <a href="<?=$this->appSettings->copyRightLink; ?>"><?=$this->appSettings->copyRightText; ?></a> | <?=$this->appSettings->footerText; ?>
                 </p>
             </footer>
         </div>
