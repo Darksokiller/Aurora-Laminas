@@ -74,7 +74,7 @@ class Module
         $firePhpWriter = new FirePhp();
         $debugFilter = new Priority(Logger::DEBUG);
         $firePhpWriter->addFilter($debugFilter);
-        if($this->settings->enableFirebugDebug)
+        if($settings->enableFirebugDebug)
         {
             $writer->addFilter($debugFilter);
         }
