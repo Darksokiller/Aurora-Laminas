@@ -2,6 +2,17 @@
 namespace User\Form;
 
 use Laminas\Form\Form;
+use Laminas\Filter\StringTrim;
+use Laminas\Filter\StripTags;
+use Laminas\Filter\ToInt;
+use Laminas\InputFilter\InputFilter;
+use Laminas\InputFilter\InputFilterInterface;
+use Laminas\Validator\StringLength;
+use Laminas\Validator\Db\NoRecordExists;
+use User\Filter\PasswordFilter;
+use Laminas\Filter\StringToLower;
+use Laminas\Validator\Identical;
+
 
 class LoginForm extends Form
 {
@@ -34,5 +45,42 @@ class LoginForm extends Form
                 'id' => 'submitbutton'
             ]
         ]);
+    }
+    public function getLoginFilter()
+    {
+//         if ($this->inputFilter) {
+//             return $this->inputFilter;
+//         }
+        
+        $inputFilter = new InputFilter();
+        
+        $inputFilter->add([
+            'name' => 'email',
+            'required' => true,
+            'filters' => [
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
+            ],
+            'validators' => [
+                [
+                    'name' => StringLength::class,
+                    'options' => [
+                        'encoding' => 'UTF-8',
+                        'min' => 1,
+                        'max' => 100,
+                    ],
+                ],
+            ],
+        ]);
+        $inputFilter->add([
+            'name' => 'password',
+            'required' => true,
+            'filters' => [
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
+            ],
+        ]);
+        $this->inputFilter = $inputFilter;
+        return $this->inputFilter;
     }
 }

@@ -1,57 +1,56 @@
 <?php
 namespace User\Model;
 use DomainException;
-use Laminas\Filter\StringTrim;
-use Laminas\Filter\StripTags;
-use Laminas\Filter\ToInt;
-use Laminas\InputFilter\InputFilter;
-use Laminas\InputFilter\InputFilterInterface;
-use Laminas\Validator\StringLength;
-use Laminas\Validator\Db\NoRecordExists;
-use User\Filter\PasswordFilter;
+use RuntimeException;
+use Laminas\Db\RowGateway\Exception;
 use Laminas\Permissions\Acl\ProprietaryInterface;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Permissions\Acl\Role\RoleInterface;
-use Laminas\Filter\StringToLower;
-use Laminas\Validator\Identical;
-use Application\Model\LoggableEntity;
+use User\Model\UserTable as UserTable;
+use User\Model\Profile as Profile;
+use User\Model\ProfileTable as ProfileTable;
+use Laminas\Db\RowGateway\RowGateway;
 
-class User implements RoleInterface, ResourceInterface, ProprietaryInterface, LoggableEntity
+class User implements RoleInterface, ResourceInterface, ProprietaryInterface
 {
     protected $resourceId = 'user';
-    public $id;
-    public $userName;
-    public $email;
-    public $regDate;
-    public $active;
-    public $verified;
-    public $password;
-    public $role;
-    public $dbAdapter;
+    protected $dbAdapter;
+    public $row;
     
-    private $inputFilter;
-    public function __construct($data = null)
+    public function __construct(RowGateway $row = null, UserTable $table = null, array $rowData = [])
     {
-        if(is_array($data))
-        {
-            return $this->exchangeArray($data);
+        try {
+            switch ($row instanceof RowGateway) {
+                // If this is true then we have been passed the return of a query as argument one
+                case true:
+                    $this->row = $row;
+                    break;
+                case false:
+                        if($row == null && !$table instanceof UserTable) {
+                            throw new RuntimeException('You must pass either a instance of Rowgateway as argument one or an instance of User\Model\UserTable as arguments two');
+                        }
+                        $this->row = new RowGateway('id', 'user', $table->getAdapter());
+                        // create an instance with an empty context, ie creating a new user
+                        $this->row->populate($rowData, false);
+                break;
+            }
+            
+        } catch (RuntimeException $e) {
+            
         }
     }
-    
-    public function exchangeArray(array $data)
+    public function __get($name)
     {
-        $this->id     = !empty($data['id']) ? $data['id'] : null;
-        $this->userName = !empty($data['userName']) ? $data['userName'] : null;
-        $this->email = !empty($data['email']) ? $data['email'] : null;
-        $this->password  = !empty($data['password']) ? $data['password'] : null;
-       // $this->password  = null;
-        $this->role  = !empty($data['role']) ? $data['role'] : null;
-        $this->regDate = !empty($data['regDate']) ? $data['regDate'] : null;
-        $this->active = !empty($data['active']) ? $data['active'] : null;
-        $this->verified = !empty($data['verified']) ? $data['verified'] : null;
-        return $this;
+        return $this->row->{$name};
     }
-    
+    public function __set($name, $value)
+    {
+        $this->row->{$name} = $value;
+    }
+    public function __call($method, $args)
+    {
+        $this->row->{$method}($args);        
+    }
     /**
      * {@inheritDoc}
      * @see \Laminas\Permissions\Acl\ProprietaryInterface::getOwnerId()
@@ -61,7 +60,7 @@ class User implements RoleInterface, ResourceInterface, ProprietaryInterface, Lo
         // TODO Auto-generated method stub
         return $this->id;
     }
-
+    
     /**
      * {@inheritDoc}
      * @see \Laminas\Permissions\Acl\Role\RoleInterface::getRoleId()
@@ -78,18 +77,8 @@ class User implements RoleInterface, ResourceInterface, ProprietaryInterface, Lo
     // Add the following method:
     public function getArrayCopy()
     {
-        return [
-            'id'     => $this->id,
-            'userName' => $this->userName,
-            'email' => $this->email,
-            'password'  => $this->password,
-            'role' => $this->role,
-            'regDate' => $this->regDate,
-            'active' => $this->regDate,
-            'verified' => $this->verified,
-        ];
+        return $this->row->toArray();
     }
-    
     /**
      * @return the $dbAdapter
      */
@@ -97,7 +86,6 @@ class User implements RoleInterface, ResourceInterface, ProprietaryInterface, Lo
     {
         return $this->dbAdapter;
     }
-
     /**
      * @param field_type $dbAdapter
      */
@@ -105,174 +93,4 @@ class User implements RoleInterface, ResourceInterface, ProprietaryInterface, Lo
     {
         $this->dbAdapter = $dbAdapter;
     }
-
-    public function setInputFilter(InputFilterInterface $inputFilter)
-    {
-        throw new DomainException(sprintf(
-            '%s does not allow injection of an alternate input filter',
-            __CLASS__
-            ));
-    }
-    public function getLoginFilter()
-    {
-        if ($this->inputFilter) {
-            return $this->inputFilter;
-        }
-        
-        $inputFilter = new InputFilter();
-        
-                $inputFilter->add([
-                    'name' => 'email',
-                    'required' => true,
-                    'filters' => [
-                        ['name' => StripTags::class],
-                        ['name' => StringTrim::class],
-                    ],
-                    'validators' => [
-                        [
-                            'name' => StringLength::class,
-                            'options' => [
-                                'encoding' => 'UTF-8',
-                                'min' => 1,
-                                'max' => 100,
-                            ],
-                        ],
-                    ],
-                ]);
-                $inputFilter->add([
-                    'name' => 'password',
-                    'required' => true,
-                    'filters' => [
-                        ['name' => StripTags::class],
-                        ['name' => StringTrim::class],
-                    ],
-                ]);
-                $this->inputFilter = $inputFilter;
-                return $this->inputFilter;
-    }
-    public function getInputFilter()
-    {
-        if ($this->inputFilter) {
-            return $this->inputFilter;
-        }
-        
-        $inputFilter = new InputFilter();
-        
-        $inputFilter->add([
-            'name' => 'id',
-            'required' => true,
-            'filters' => [
-                ['name' => ToInt::class],
-            ],
-        ]);
-        
-        $inputFilter->add([
-            'name' => 'userName',
-            'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'min' => 1,
-                        'max' => 100,
-                    ],
-                    'name' => NoRecordExists::class,
-                    'options' => [
-                        'table' => $this->getResourceId(),
-                        'field' => 'userName',
-                        'dbAdapter' => $this->getDbAdapter(),
-                    ],
-                ],
-                
-            ],
-        ]);
-        
-        $inputFilter->add([
-            'name' => 'email',
-            'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'min' => 1,
-                        'max' => 100,
-                    ],
-                    'name' => NoRecordExists::class,
-                    'options' => [
-                        'table' => $this->getResourceId(),
-                        'field' => 'email',
-                        'dbAdapter' => $this->getDbAdapter(),
-                    ],
-                ],
-            ],
-        ]);
-        
-        $inputFilter->add([
-            'name' => 'password',
-            'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-                ['name' => PasswordFilter::class],
-            ],
-            'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'min' => 1,
-                        'max' => 100,
-                    ],
-                ],
-            ],
-        ]);
-        
-        $inputFilter->add([
-            'name' => 'conf_password',
-            'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'min' => 1,
-                        'max' => 100,
-                    ],
-                    'name' => Identical::class,
-                    'options' => [
-                        'token' => 'password',
-                        'messages' => [
-                            \Laminas\Validator\Identical::NOT_SAME => 'Passwords are not the same',
-                        ],
-                    ],
-                ],
-            ],
-        ]);
-                
-        $this->inputFilter = $inputFilter;
-        return $this->inputFilter;
-    }
-    /**
-     * @return the $password
-     */
-    public function getPassword()
-    {
-        return $this->password;
-    }
-    
 }
-?>

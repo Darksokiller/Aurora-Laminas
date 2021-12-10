@@ -1,20 +1,14 @@
 <?php
+use User\Model\User;
 // module/User/view/User/User/index.phtml:
 
 $title = 'System Users';
 $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
-<?php 
-               //var_dump($this->user);
-//                 $this->navigation()->setAcl($this->acl);
-//                 $this->navigation()->setRole($this->user->role);
-//                 $this->navigation()->menu()->setUlClass('nav nav-tabs');
-//                 //$this->navigation()->menu()->setPartial('application/partials/button-menu');
-//                 echo $this->navigation('Laminas\Navigation\User')->menu();
-                ?>
 <p>
 	<?php 
+	//var_dump($this->user);
 	if($this->acl->isAllowed($this->user, $this->user, 'user.create.new')):
 	?>
     <span><a href="<?= $this->url('user', ['action' => 'add', 'id' => 0]) ?>">Add User</a></span>
@@ -32,9 +26,14 @@ $this->headTitle($title);
     <th>Verification Status</th>
     <th>Account Actions</th>
 </tr>
-<?php foreach ($users as $user) : ?>
+<?php 
+//$userObject = new User([]);
+foreach ($users as $user) : 
+$user = new User($user);
+//var_dump($user);
+?>
     <tr>
-    	<td><a href="<?= $this->url('profile', ['action' => 'view', 'id' => $user->id])?>">View</a></td>
+    	<td><a href="<?= $this->url('profile', ['action' => 'view', 'userName' => $user->userName])?>">View</a></td>
         <td><?= $this->escapeHtml($user->userName) ?></td>
         <td><?= $this->escapeHtml($user->email) ?></td>
         <?php
@@ -66,9 +65,9 @@ $this->headTitle($title);
 			if($this->acl->isAllowed($this->user, $user, 'edit')):
 			?>
 			<a
-			href="<?= $this->url('user', ['action' => 'edit', 'id' => $user->id]) ?>">Edit</a>
+			href="<?= $this->url('user', ['action' => 'edit', 'userName' => $user->userName]) ?>">Edit</a>
 			<a
-			href="<?= $this->url('user', ['action' => 'delete', 'id' => $user->id]) ?>">Delete</a>
+			href="<?= $this->url('user', ['action' => 'delete', 'userName' => $user->userName]) ?>">Delete</a>
 			<?php 
 			endif;
 			?>

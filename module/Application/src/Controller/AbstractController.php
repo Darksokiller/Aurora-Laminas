@@ -1,39 +1,62 @@
 <?php
 namespace Application\Controller;
 
-// use Laminas\Db\TableGateway\TableGatewayInterface as TableGatewayInterface;
-// use Laminas\Mvc\Application as Application;
 use Laminas\Mvc\Controller\AbstractActionController;
-use Laminas\Session;
-// use Laminas\Session\Container as SessionContainer;
-use Laminas\Mvc\Exception;
 use Laminas\Mvc\MvcEvent;
 use Laminas\View\Model\ViewModel;
 use Laminas\Authentication\AuthenticationService as AuthService;
 use User\Model\UserTable as Table;
 use User\Model\User as User;
+use User\Model\Guest;
+use Laminas\Log\Logger as Logger;
 
 abstract class AbstractController extends AbstractActionController
 {
 
     public $baseUrl;
-
+    /**
+     * 
+     * @var $referringUrl 
+     */
+    public $referringUrl;
+    
     public $authService;
-
+    /**
+     * @var $user User\Model\User
+     */
     public $user;
-
+    /**
+     * 
+     * @var $logger Laminas\Log\Logger
+     */
+    public $logger;
+    /**
+     * 
+     * @var $view Laminas\View\Model\ViewModel
+     */
+    public $view;
+    /**
+     * 
+     * @var $table User\Model\UserTable
+     */
     public $table;
-
+    /**
+     * 
+     * @var $acl Laminas\Permission\Acl
+     */
     public $acl;
 
     public $authenticated = false;
     
-    public $systemMessage = null;
-    
-    public $messageType = null;
-    
+    /**
+     * 
+     * @var $config array
+     */
     public $config;
-    
+    /**
+     * 
+     * @var $appSettings Laminas\Config\Config
+     */
     public $appSettings;
     
     protected $action;
@@ -42,60 +65,54 @@ abstract class AbstractController extends AbstractActionController
 
     public function onDispatch(MvcEvent $e)
     {
-        $this->baseUrl = $this->getRequest()->getBasePath();
-        $this->authService = new AuthService();
+        // Get an instance of the Service Manager
         $sm = $e->getApplication()->getServiceManager();
-        //$settings = $sm->get('Application\Model\SettingsTableGateway');
+        // Request Object
+        $request = $sm->get('Request');
+        // The Referring Url for the current request ie the previous page
+        $this->referringUrl = $request->getServer()->get('HTTP_REFERER');
+        // The Logger Service
+        $this->logger = $sm->get('Laminas\Log\Logger');
+        // Not sure why we need this....
+        $this->baseUrl = $this->getRequest()->getBasePath();
+        // The authentication Object
+        $this->authService = new AuthService();
+        // This removes the need for more than one db query to make settings available to Aurora
         $this->appSettings = $sm->get('AuroraSettings');
-        //var_dump($this->appSettings);
+        // This may be removed in next branch
         $pluginManager = $sm->get('ControllerPluginManager');
-        //var_dump($pluginManager);
+        //TODO remove this call in next brach
         $fm = $pluginManager->get('FlashMessenger');
-        //var_dump($fm);
-        //var_dump(get_parent_class(get_called_class()));
-
+        // An instance of User\Model\User
         $table = $sm->get('User\Model\UserTable');
-        //var_dump($table->fetchAll());
-        $this->acl = $sm->get('Application\Permissions\PermissionsManager');
-        $this->acl = $this->acl->getAcl();
+        // An instance of the Acl Service
+        $this->acl = $sm->get('Acl');
+        // The default View Model so that we always have the same object
         $this->view = new ViewModel();
-        $this->view->setVariable('appSettings', $this->appSettings);
-        $this->layout()->appSettings = $this->appSettings;
-        
-        //var_dump($sm->get('Application\Controller\Plugin\CreateHttpForbiddenModel'));
-        
+        // Is the User Authenticated?
         switch ($this->authService->hasIdentity()) {
             case true :
                 $this->authenticated = true;
-                $this->user = $table->getUserByEmail($this->authService->getIdentity());
+                $this->user = new User($table->getCurrentUser($this->authService->getIdentity()));
                 break;
             default:
-                $user = new User();
-                $this->user = $user->exchangeArray([
-                    'userName' => 'Guest',
-                    'role' => 'guest'
-                ]);
+                $user = new Guest();
+                $this->user = $user;
                 break;
         }
-        
-        //var_dump($this->user);
-        $this->user->password = null;
+        $this->view->setVariable('appSettings', $this->appSettings);
+        $this->layout()->appSettings = $this->appSettings;
         $this->view->user = $this->user;
         $this->view->acl = $this->acl;
         $this->action = $this->params()->fromRoute('action');
         $this->layout()->acl = $this->acl;
         $this->layout()->user = $this->user;
         $this->layout()->authenticated = $this->authenticated;
-        $this->layout()->systemMessage = $this->systemMessage;
-        $this->layout()->messageType = $this->messageType;
-        //$this->layout()->userName = $this->user->userName;
         $this->_init();
         return parent::onDispatch($e);
     }
-
     public function _init()
     {
         return $this;
     }
-
 }

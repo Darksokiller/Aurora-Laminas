@@ -12,8 +12,11 @@ use Laminas\Permissions\Acl\ProprietaryInterface;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Permissions\Acl\Role\RoleInterface;
 use Laminas\Filter\StringToLower;
+use User\Model\User as User;
+use User\Model\ProfileTable as DataSource;
 
-class Profile implements ResourceInterface, ProprietaryInterface
+
+class Profile extends User implements ResourceInterface, ProprietaryInterface
 {
     protected $resourceId = 'profile';
     public $id;
@@ -26,12 +29,27 @@ class Profile implements ResourceInterface, ProprietaryInterface
     public $gender;
     public $race;
     public $bio;
+    public $dataSource;
     
     private $inputFilter;
     
+    public function __construct(User $user = null, DataSource $dataSource = null, array $data = null)
+    {
+        if($user instanceof User && $dataSource instanceof DataSource)
+        {
+           // this means we need the profile data for a specific user by just knowing the id
+           $data = $dataSource->fetchById($user->id);
+           return $this->exchangeArray($data);
+        }
+        elseif (empty($user) && empty($dataSource) && !empty($data))
+        {
+            // if neither object is passed and $data is not empty then $data is effectively the $dataSource
+            return $this->exchangeArray($data);
+        }
+    }
+    
     public function exchangeArray(array $data)
     {
-        $this->id     = !empty($data['id']) ? $data['id'] : null;
         $this->userId = !empty($data['userId']) ? $data['userId'] : null;
         $this->firstName = !empty($data['firstName']) ? $data['firstName'] : null;
         $this->lastName  = !empty($data['lastName']) ? $data['lastName'] : null;

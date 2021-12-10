@@ -17,18 +17,20 @@ abstract class AbstractModel implements ResourceInterface, ProprietaryInterface
 {
     protected $tableGateway;
     public $acl;
-   // public $events;
-    
+    protected $logger;
+    protected $dependentTables;
+    /**
+     * 
+     * @param TableGatewayInterface $tableGateway
+     * @param array $dependentTables | array keys are dependent table Classnames with either a null | object value Laminas\Db\TableGateway\TableGateway
+     * @param Logger $logger
+     */
     public function __construct(TableGatewayInterface $tableGateway)
     {
+        //var_dump(func_get_args());
         $this->tableGateway = $tableGateway;
         $this->_init();
     }
-//     public function save(LoggableEntity $user)
-//     {
-//        // $params = compact('user');
-//         $this->getEventManager()->trigger(__FUNCTION__, $this, $user);
-//     }
     public function getAdapter()
     {
         return $this->tableGateway->getAdapter();

@@ -8,9 +8,8 @@ use User\Form\LoginForm;
 use User\Form\RegistrationForm;
 use User\Model\User;
 use User\Model\UserTable;
-use Laminas\Mail\Message;
-use Laminas\Mail\Transport\Smtp as SmtpTransport;
-use Laminas\Mail\Transport\SmtpOptions;
+use User\Filter\RegistrationHash as Filter;
+
 use Laminas\Validator\Db\NoRecordExists as Validator;
 use Application\Utilities\Mailer;
 use Application\Event\LogEvents;
@@ -28,7 +27,7 @@ class RegisterController extends AbstractController
     public function __construct(UserTable $table)
     {
         $this->table = $table;
-        $this->table->setEventManager($this->getEventManager());
+       // $this->table->setEventManager($this->getEventManager());
         //var_dump($this->table);
     }
 	/**
@@ -36,20 +35,19 @@ class RegisterController extends AbstractController
 	 */
     public function indexAction()
     {
-        $events = $this->getEventManager();
         $sm = $this->getEvent()->getApplication()->getServiceManager();
-        $logger = $sm->get('Laminas\Log\Logger');
+        //$this->logger
         $mailer = $sm->get('Application\Utilities\Mailer');
         //$mailer->setEventManager($events);
         //var_dump($mailer);
-        $logger->info('test message', ['userId' => $this->user->id]);
-        $mailer->send($this->user->id, 'this is a test registration email', 'someuser@domain.com');
+       // $logger->info('test message', ['userId' => $this->user->id]);
+       // $mailer->send($this->user->id, 'this is a test registration email', 'someuser@domain.com');
         
         if($this->appSettings->disableRegistration) {
            return $this->view; 
         }
         $form = new UserForm();
-        $form->get('submit')->setValue('Add');
+        $form->get('submit')->setValue('Register');
         
         $request = $this->getRequest();
         
@@ -75,40 +73,16 @@ class RegisterController extends AbstractController
         //$now->setTimezone(new \DateTimeZone('America/Chicago'));
         // time format is 02/13/1975
         $now->format($this->appSettings->timeFormat);
-
-        /**
-         *
-         * smtp-relay.gmail.com on port 587.
-         */
-        //$post['email'] = 'shelleyworsham@gmail.com';
-        $message = new Message();
-        $message->addTo($post['email']);
-        // This email must match the connection_config key in the options below
-        $message->addFrom($this->appSettings->smtpSenderAddress);
-        $message->setSubject($this->appSettings->siteName . ' account verification');
-        $message->setBody("Please click the link below to verify your account");
         
-        $transport = new SmtpTransport();
-        
-        $options   = new SmtpOptions([
-            'name' => 'webinertia.net',
-            'host' => 'smtp-relay.gmail.com',
-            'port' => '587',
-            'connection_class'  => 'login',
-            'connection_config' => [
-                'username' => $this->appSettings->smtpSenderAddress,
-                'password' => $this->appSettings->smtpSenderPasswd,
-                'ssl' => 'tls',
-            ],
-        ]);
-        $transport->setOptions($options);
-        $transport->send($message);
-        
-        
-        
-        
+        $filter = new Filter();
+        // get  the valid data from the form, we need to add to it before user is saved
+        $formData = $form->getData();
+        $hash = new Filter($formData['email'], $now);
+        $hash = $hash->getHash();
         //$user->exchangeArray($form->getData());
-        $user = new User($form->getData());
+        $user = new User($formData);
+        $user->regDate = $now;
+        $user->regHash = $hash;
         $this->table->save($user);
         return $this->redirect()->toRoute('user');
     }

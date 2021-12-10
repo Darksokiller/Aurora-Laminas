@@ -12,7 +12,7 @@ return [
             'user' => [
                 'type'    => Segment::class,
                 'options' => [
-                    'route' => '/user[/:action[/:id]]',
+                    'route' => '/user[/:action[/:userName]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id'     => '[0-9]+',
@@ -26,7 +26,7 @@ return [
             'profile' => [
                 'type'    => Segment::class,
                 'options' => [
-                    'route' => '/user/profile[/:action[/:id]]',
+                    'route' => '/user/profile[/:action[/:userName]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id'     => '[0-9]+',

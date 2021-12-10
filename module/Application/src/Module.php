@@ -45,13 +45,19 @@ class Module
         $config = include __DIR__ . '/../config/module.config.php';
         return $config;
     }
-
-
     public function onBootstrap($e)
     {
         $this->bootstrapSettings($e);
+        $this->BootstrapAcl($e);
         $this->bootstrapSession($e);
         $this->bootstrapLogging($e);
+    }
+    public function bootstrapAcl($e)
+    {
+        $acl = new PermissionsManager(new Acl());
+        $acl = $acl->getAcl();
+        $sm = $e->getApplication()->getServiceManager();
+        $sm->setService('Acl', $acl);
     }
     public function bootstrapSettings($e)
     {
@@ -69,25 +75,25 @@ class Module
         $sm = $e->getapplication()->getServiceManager();
         $settings = $sm->get('AuroraSettings');
         $config = $sm->get('config');
-
+        $logger = $sm->get('Laminas\Log\Logger');
         $writer = new Db(new dbAdapter($config['db']), 'log');
-        $firePhpWriter = new FirePhp();
-        $debugFilter = new Priority(Logger::DEBUG);
-        $firePhpWriter->addFilter($debugFilter);
-        if($settings->enableFirebugDebug)
+        $standardLogFilter = new Priority(Logger::DEBUG);
+        $writer->addFilter($standardLogFilter);
+
+        if($settings->firebugDebug)
         {
+            $firePhpWriter = new FirePhp();
+            $debugFilter = new Priority(Logger::DEBUG);
+            $firePhpWriter->addFilter($debugFilter);
             $writer->addFilter($debugFilter);
+            $logger->addWriter($firePhpWriter);
         }
-        
         
         $dbFormatter = new DbFormatter();
         $dbFormatter->setDateTimeFormat($settings->timeFormat);
-        
         $writer->setFormatter($dbFormatter);
-        
-        $logger = $sm->get('Laminas\Log\Logger');
         $logger->addWriter($writer);
-        $logger->addWriter($firePhpWriter);
+        
         Logger::registerErrorHandler($logger);
         
     }
@@ -99,17 +105,14 @@ class Module
         try {
             $session->start();
             $container = new Session\Container('initialized');
-            //var_dump($container);
         } catch (\Laminas\Session\Exception\RuntimeException $e) {
             //session has expired
             return;
         }
-        
         //let’s check if our session is not already created (for the guest or user)
         if (isset($container->init)) {
             return;
         }
-        
         //new session creation
         $request = $serviceManager->get('Request');
         $session->regenerateId(true);
@@ -118,7 +121,6 @@ class Module
         $container->httpUserAgent = $request->getServer()->get('HTTP_USER_AGENT');
         $config = $serviceManager->get('Config');
         $sessionConfig = $config['session'];
-      // var_dump($config);
         $chain = $session->getValidatorChain();
         
         foreach ($sessionConfig['validators'] as $validator) {
@@ -152,21 +154,11 @@ class Module
                 
                 return $sessionManager;
             },
-            Application\Permissions\PermissionsManager::class => function($container) {
-                return new Application\Permissions\PermissionsManager(new Acl());
-            },
             'factories' => [
                 Model\SettingsTableGateway::class => function ($container) {
                     $dbAdapter = $container->get(AdapterInterface::class);
-                    //$resultSetPrototype = new ResultSet();
-                    //$resultSetPrototype->setArrayObjectPrototype(new Model\Setting());
                     return new SettingsTable(new TableGateway('settings', $dbAdapter, new RowGatewayFeature('id')));
                 },
-//                 Utilities\Mailer::class => function($container) {
-//                     $mailer = new Mailer($container->get('SharedEventManager'));
-//                     $mailer->setEventManager($container->get('EventManager'));
-//                     return $mailer;
-//                 },
             ],
         ];
     }

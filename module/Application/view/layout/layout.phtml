@@ -7,10 +7,10 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <?= $this->headTitle($this->appSettings->appName)->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?= $this->headTitle(isset($this->appSettings->appName) ? $this->appSettings->appName : '')->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?= $this->headMeta()
-            ->prependName('keywords', $this->appSettings->seoKeyWords)
+        ->prependName('keywords', isset($this->appSettings->seoKeyWords) ? $this->appSettings->seoKeyWords : '')
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
             ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
             
@@ -44,7 +44,7 @@
                     >
                      <span class="navbar-toggler-icon"></span>
                     </button>
-                    <a class="navbar-brand" href="<?= $this->url('home') ?>">Aurora CMS</a>
+                    <a class="navbar-brand" href="<?= $this->url('home') ?>"><?=isset($this->appSettings->appName) ? $this->appSettings->appName : 'Home'; ?></a>
                 </div>
                 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -59,28 +59,16 @@
                 </div>
             </div>
         </nav>
-        <div class="container">
-       
-        		<?php 
-        		var_dump($this->messageType);
-        		//echo $this->flashMessenger()->render($this->messageType);
-        		switch($this->hasMessages){
-        		    case true :
-        		        echo $this->flashMessenger()->render('info');
-        		        break;
-        		    default:
-        		        
-        		        break;
-        		}
-        		?>
-        
-        
+        <div class="container">        
             <?= $this->content ?>
             <hr>
             <footer>
                 <p>
                     &copy; <?= date('Y') ?>
-                    <a href="<?=$this->appSettings->copyRightLink; ?>"><?=$this->appSettings->copyRightText; ?></a> | <?=$this->appSettings->footerText; ?>
+                    <a href="<?= isset($this->appSettings->copyRightLink) ? $this->appSettings->copyRightLink : '#'; ?>">
+                    <?= isset($this->appSettings->copyRightText) ? $this->appSettings->copyRightText : 'Default text'; ?></a> 
+                    | 
+                    <?= isset($this->appSettings->footerText) ? $this->appSettings->footerText : 'Default Text'; ?>
                 </p>
             </footer>
         </div>

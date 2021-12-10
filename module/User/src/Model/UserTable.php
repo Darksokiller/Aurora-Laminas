@@ -1,66 +1,69 @@
 <?php
 namespace User\Model;
+
 use Application\Model\AbstractModel;
 use RuntimeException;
 use Laminas\Session;
 use User\Model\User as User;
+use User\Model\Profile as Profile;
 use Application\Model\LoggableEntity;
-use Laminas\Db\TableGateway\TableGatewayInterface;
+use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Validator\EmailAddress as emailValidater;
 use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter as AuthAdapter;
 use Laminas\Authentication\AuthenticationService as AuthService;
 use Laminas\Authentication\Result;
-use Laminas\EventManager\EventManager;
-use Laminas\EventManager\EventManagerAwareInterface;
-use Laminas\EventManager\EventManagerInterface;
+use Laminas\Db\Sql\Select as Select;
+use Application\Permissions\PermissionsManager as Acl;
+use Laminas\Permissions\Acl\ProprietaryInterface;
+use Laminas\Permissions\Acl\Resource\ResourceInterface;
 
-class UserTable extends AbstractModel implements EventManagerAwareInterface
+class UserTable extends TableGateway
 {
-    protected $events;
+
 
     public function login(User $user)
     {
-        
-        /**
-         * 
-         * @var unknown $callback
-         * these arguments are switched around due to the 
-         * manner in which they are passed during the authentication
-         * see Laminas\Authentication\CallbackCheckAdapter::authenticateValidateResult($resultIdentity)
-         */
-        $callback = function($hash, $password) {
-            return password_verify($password, $hash);
-        };
-        
-        $authAdapter = new AuthAdapter($this->tableGateway->getAdapter(), 
-                                       'user', 
-                                       'email', 
-                                       'password',
-                                       $callback);
-
-        $authAdapter->setIdentity($user->email)
-        ->setCredential($user->getPassword());
-        
-        $select = $authAdapter->getDbSelect();
-        $select->where('active = 1')->where('verified = 1');
-        
-        // Perform the authentication query, saving the result
-        $authService = new AuthService();
-        $authService->setAdapter($authAdapter);
-       //$result = $authAdapter->authenticate();
-        $result = $authService->authenticate();
-        //var_dump($result->getMessages());
+        try {
+            $callback = function($hash, $password) {
+                return password_verify($password, $hash);
+            };
+            
+            $authAdapter = new AuthAdapter($this->getAdapter(),
+                'user',
+                'email',
+                'password',
+                $callback);
+            
+            $authAdapter->setIdentity($user->email)
+            ->setCredential($user->password);
+            
+            $select = $authAdapter->getDbSelect();
+            $select->where('active = 1')->where('verified = 1');
+            
+            // Perform the authentication query, saving the result
+            $authService = new AuthService();
+            $authService->setAdapter($authAdapter);
+            //$result = $authAdapter->authenticate();
+            $result = $authService->authenticate();
+            //var_dump($result);
+            
+            //var_dump($result->getMessages());
             switch ($result->getCode()) {
                 
                 case Result::SUCCESS:
+                    //$this->logger->info('User ' . $result->userName . ' logged in.', ['userId' => $result->id, 'userName' => $result->userName]);
                     /** do stuff for successful authentication **/
-                   // $omitColumns = ['password'];
+                    $omitColumns = ['password'];
                     //$userSession = new Session\Container('user');
                     //$userSession->details = $authAdapter->getResultRowObject(null, $omitColumns);
                     //var_dump($authAdapter->getResultRowObject(null, $omitColumns));
-                    return true;
+                    $user = $authAdapter->getResultRowObject(null, $omitColumns);
+                    //var_dump((array) $user);
+                    
+                    //die(__FILE__ . '::' . __LINE__);
+                    return new User(null, $this, (array)$user);
                     break;
-                
+                    
                 case Result::FAILURE_IDENTITY_NOT_FOUND:
                     /** do stuff for nonexistent identity **/
                     break;
@@ -74,25 +77,29 @@ class UserTable extends AbstractModel implements EventManagerAwareInterface
                     return false;
                     break;
             }
-        //}
-        
-        //die();
+        } catch (Exception $e) {
+        }
     }
-    public function test($userId, $message, $priority, $log)
-    {
-        //var_dump(__FUNCTION__);
-        $params = compact('userId', 'message', 'priority');
-        //$log->debug($this->events);
-        $log->debug('debug message');
-        $this->getEventManager()->trigger(__FUNCTION__, $this, $params);
-    }
+
     public function fetchAll()
     {
-        return $this->tableGateway->select();
+        return $this->select();
+    }
+    public function fetchByColumn($column, $value)
+    {
+        $column = (string) $column;
+        $rowset = $this->select([$column => $value]);
+        $row = $rowset->current();
+        //unset($row->password);
+        if (! $row) {
+            throw new RuntimeException(sprintf('Could not find row with column: ' . $column . ' with value: ' . $value));
+        }
+        
+        return new User($row);
     }
     public function getHashByEmail($email)
     {
-        $rowset = $this->tableGateway->select(['email' => $email]);
+        $rowset = $this->select(['email' => $email]);
         $row = $rowset->current();
         if (! $row) {
             throw new RuntimeException(sprintf(
@@ -102,10 +109,31 @@ class UserTable extends AbstractModel implements EventManagerAwareInterface
         }
         return $row->password;
     }
+    
+    public function getCurrentUser($email)
+    {
+        $email = (string) $email;
+        $rowset = $this->select(function(Select $select) use ($email){
+            $select->where(['user.email' => $email])->join('user_profile',              // table name
+                'user.id = user_profile.userId');
+        });
+        $row = $rowset->current();
+        //var_dump($row);
+        //$this->logger->info("__FILE__ __LINE__", );
+        //unset($row->password);
+        if (! $row) {
+            throw new RuntimeException(sprintf(
+                'Could not find row with identifier %d',
+                $email
+                ));
+        }
+        
+        return $row;
+    }
     public function getUserByEmail($email, $asArray = false)
     {
         $email = (string) $email;
-        $rowset = $this->tableGateway->select(['email' => $email]);
+        $rowset = $this->select(['email' => $email]);
         $row = $rowset->current();
         //unset($row->password);
         if (! $row) {
@@ -120,7 +148,7 @@ class UserTable extends AbstractModel implements EventManagerAwareInterface
     public function fetchUserById($id)
     {
         $id = (int) $id;
-        $rowset = $this->tableGateway->select(['id' => $id]);
+        $rowset = $this->select(['id' => $id]);
         $row = $rowset->current();
         if (! $row) {
             throw new RuntimeException(sprintf(
@@ -134,7 +162,7 @@ class UserTable extends AbstractModel implements EventManagerAwareInterface
     public function getUser($id)
     {
         $id = (int) $id;
-        $rowset = $this->tableGateway->select(['id' => $id]);
+        $rowset = $this->select(['id' => $id]);
         $row = $rowset->current();
         if (! $row) {
             throw new RuntimeException(sprintf(
@@ -148,14 +176,6 @@ class UserTable extends AbstractModel implements EventManagerAwareInterface
     
     public function save(User $user)
     {
-        $log = [
-            'message' => 'User',
-            'extra' => [
-                'userId' => $user->id,
-                
-            ],
-        ];
-        $this->getEventManager()->trigger(__FUNCTION__, $this, $log);
         //var_dump($user);
         
        // die(__FILE__);
@@ -172,14 +192,14 @@ class UserTable extends AbstractModel implements EventManagerAwareInterface
         $id = (int) $user->id;
         
         if ($id === 0) {
-            $this->tableGateway->insert($data);
+            $this->insert($data);
             $data = new User($data);
            // parent::save($data);
             return;
         }
         
         try {
-            $this->getUser($id);
+            $data = $this->getUser($id);
         } catch (RuntimeException $e) {
             throw new RuntimeException(sprintf(
                 'Cannot update User with identifier %d; does not exist',
@@ -187,36 +207,14 @@ class UserTable extends AbstractModel implements EventManagerAwareInterface
                 ));
         }
         
-        $this->tableGateway->update($data, ['id' => $id]);
+        $result = $this->update($data, ['id' => $id]);
+        if($result > 0) {
+            //$this->logger->notice("$data->firstName $data->lastName updated thier information", ['extra_userId' => $data->id]);
+        }
     }
     
     public function deleteUser($id)
     {
-        $this->tableGateway->delete(['id' => (int) $id]);
-    }
-    /**
-     * {@inheritDoc}
-     * @see \Laminas\EventManager\EventManagerAwareInterface::setEventManager()
-     */
-    public function setEventManager(EventManagerInterface $events)
-    {
-        $events->setIdentifiers([
-            __CLASS__,
-            get_class($this),
-        ]);
-        $this->events = $events;
-    }
-    
-    /**
-     * {@inheritDoc}
-     * @see \Laminas\EventManager\EventsCapableInterface::getEventManager()
-     */
-    public function getEventManager()
-    {
-        if (! $this->events) {
-            $this->setEventManager(new EventManager());
-        }
-        return $this->events;
+        $this->delete(['id' => (int) $id]);
     }
 }
-?>

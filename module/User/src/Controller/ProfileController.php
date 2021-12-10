@@ -3,6 +3,7 @@ namespace User\Controller;
 use Application\Controller\AbstractController;
 use Laminas\View\Model\ViewModel;
 use User\Model\UserTable;
+use \Exception;
 
 class ProfileController extends AbstractController
 {
@@ -26,24 +27,45 @@ class ProfileController extends AbstractController
     }
     public function viewAction()
     {
-        $userId = (int) $this->params()->fromRoute('id');
-        //var_dump($userId);
-        switch(is_int($userId) && $userId !== 0) {
-            case true:
-                $user = $this->table->fetchUserById($userId);
-                //var_dump($user);
-                break;
-            default:
-                $user = $this->user;
-                break;
+        try {
+            $userName = (int) $this->params()->fromRoute('userName');
+            $user = $this->table->fetchByColumn('userName', $userName);
+            switch(!empty($userName)) {
+                case true:
+                    $this->view->setVariable('data', $user);
+                    break;
+                default:
+                    // we only wanna log this if $userId = 0 since that means they are coming in from the login redirect
+                        try {
+                            $pData = $this->profileTable->fetchById($user->id);
+                            $user = $this->user;
+                            // by this point it should be safe to assume we have a logged in user with atleast an id and userName
+                            $previous = substr($this->referringUrl, -5); // looking for login ;)
+                            if($previous === 'login') {
+                                $this->logger->info('User ' . $this->user->userName . ' logged in.', [
+                                    'userId' => $this->user->id,
+                                    'userName' => $this->user->userName,
+                                    'firstName' => ! empty($pData->firstName) ? $pData->firstName : null,
+                                    'lastName' => ! empty($pData->lastName) ? $pData->lastName : null
+                                ]);
+                            }
+                            // Set the profile data in the $data view variable
+                            $this->view->setVariable('data', $pData);
+                            // return the view object
+                            return $this->view;
+                        } catch (Exception $e) {
+                            //$this->logger->err($e->getMessage());
+                        }
+                    break;
+            }
+            
+            return $this->view;
+        } catch (Exception $e) {
+            //$this->logger->err($e->getMessage());
         }
-        // set the user in the profileTable
-        $this->profileTable->setUser($user);
-        //var_dump($user);
-        $pData = $this->profileTable->fetchById($user->id);
-        $this->view->setVariable('data', $pData);
-        //var_dump($pData);
-        return $this->view;
+        
+        
+        
     }
     
 }

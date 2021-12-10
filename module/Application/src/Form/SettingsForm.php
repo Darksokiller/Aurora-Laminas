@@ -8,9 +8,6 @@ use Laminas\Form\Element\Textarea;
 use Laminas\Form\Element\Text;
 use Laminas\Form\Element\Submit;
 use Laminas\Form\Fieldset;
-use Laminas\Mail\Header\Subject;
-// use Application\Model\SettingsTable as Settings;
-// use Laminas\Db\TableGateway\TableGateway;
 
 /**
  *
@@ -20,27 +17,12 @@ use Laminas\Mail\Header\Subject;
 class SettingsForm extends Form
 {
 
-    // TODO - Insert your code here
-    
-    /**
-     */
     public function __construct($name, $options = [])
     {
         parent::__construct('appSettings');
         parent::setOptions($options);
         
         $appSettings = $this->getOptions();
-        //var_dump($appSettings);
-        // TODO - Insert your code here
-        
-//         $this->add([
-//             'name' => 'password',
-//             'type' => 'password',
-//             'options' => [
-//                 'label' => 'Password'
-//             ]
-//         ]);
-        
         
         foreach($appSettings as $setting) {
             
@@ -79,26 +61,10 @@ class SettingsForm extends Form
                     default:
                         break;
                 }
-                
-                
-                // continue;
             }
             
         }
-//         $element = new Submit();
-//         $element->setName('submit');
-//         $element->setLabel('Save');
-//         $element->setAttributes(['label' => 'Save', 'id' => 'submitbutton']);
-//         $this->add($element);
-//         $this->add([
-//             'name' => 'submit',
-//             'type' => 'submit',
-//             'label' => 'Save',
-//             'attributes' => [
-//                 'value' => 'Save',
-//                 'id' => 'submitbutton'
-//             ]
-//         ]);
+
     }
 }
 
