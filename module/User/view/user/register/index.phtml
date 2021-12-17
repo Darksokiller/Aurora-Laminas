@@ -5,6 +5,7 @@ $this->headTitle($title);
 echo $this->flashMessenger()->render('error');
 ?>
 <?php 
+//var_dump($this->appSettings);
 if($this->appSettings->disableRegistration):
 ?>
 	<p>Registration is currently disabled. Please contact the site administrator for assistance. <a href="mailto:<?=$this->appSettings->appContactEmail; ?>">Email Administrator</a></p>
@@ -38,8 +39,9 @@ $conf_password = $form->get('conf_password');
 $conf_password->setAttribute('class', 'form-control');
 $conf_password->setAttribute('placeholder', 'Confirm Password');
 
-$captcha = $form->get('captcha');
-
+if($this->appSettings->enableCaptcha) {
+    $captcha = $form->get('captcha');
+}
 // This provides CSS classes for the submit button:
 $submit = $form->get('submit');
 $submit->setAttribute('class', 'btn btn-primary');
@@ -74,12 +76,16 @@ echo $this->form()->openTag($form);
     <?= $this->formElement($conf_password) ?>
     <?= $this->formElementErrors()->render($conf_password, ['class' => 'help-block']) ?>
 </div>
-
+<?php
+if($this->appSettings->enableCaptcha) :
+?>
 <div class="form-group">
     <?= $this->formElement($captcha) ?>
     <?= $this->formElementErrors()->render($captcha, ['class' => 'help-block']) ?>
 </div>
-
+<?php
+endif;
+?>
 <?php
 echo $this->formSubmit($submit);
 echo $this->formHidden($form->get('id'));

@@ -46,41 +46,5 @@ class LoginForm extends Form
             ]
         ]);
     }
-    public function getLoginFilter()
-    {
-//         if ($this->inputFilter) {
-//             return $this->inputFilter;
-//         }
-        
-        $inputFilter = new InputFilter();
-        
-        $inputFilter->add([
-            'name' => 'email',
-            'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'min' => 1,
-                        'max' => 100,
-                    ],
-                ],
-            ],
-        ]);
-        $inputFilter->add([
-            'name' => 'password',
-            'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-        ]);
-        $this->inputFilter = $inputFilter;
-        return $this->inputFilter;
-    }
+
 }

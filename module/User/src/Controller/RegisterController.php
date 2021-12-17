@@ -9,7 +9,7 @@ use User\Form\RegistrationForm;
 use User\Model\User;
 use User\Model\UserTable;
 use User\Filter\RegistrationHash as Filter;
-
+use User\Filter\FormFilters;
 use Laminas\Validator\Db\NoRecordExists as Validator;
 use Application\Utilities\Mailer;
 use Application\Event\LogEvents;
@@ -27,14 +27,13 @@ class RegisterController extends AbstractController
     public function __construct(UserTable $table)
     {
         $this->table = $table;
-       // $this->table->setEventManager($this->getEventManager());
-        //var_dump($this->table);
     }
 	/**
 	 * The default action - show the home page
 	 */
     public function indexAction()
     {
+        $formFilters = new FormFilters(null, $this->table);
         $sm = $this->getEvent()->getApplication()->getServiceManager();
         //$this->logger
         $mailer = $sm->get('Application\Utilities\Mailer');
@@ -46,7 +45,7 @@ class RegisterController extends AbstractController
         if($this->appSettings->disableRegistration) {
            return $this->view; 
         }
-        $form = new UserForm();
+        $form = new UserForm('RegistrationForm', $this->appSettings->toArray());
         $form->get('submit')->setValue('Register');
         
         $request = $this->getRequest();
@@ -58,9 +57,9 @@ class RegisterController extends AbstractController
         // if weve made it to here then its a post request
         $post = $request->getPost();
         // we have to have a new one of these so we can hydrate it and call the dbadapter for the validators
-        $user = new User();
-        $user->setDbAdapter($this->table->getAdapter());
-        $form->setInputFilter($user->getInputFilter());
+        
+        //$user->setDbAdapter($this->table->getAdapter());
+        $form->setInputFilter($formFilters->getInputFilter());
         $form->setData($request->getPost());
         // Is the posted form data valid? if not send them the form back and the problems 
         // reported by the filters and validators
@@ -69,22 +68,25 @@ class RegisterController extends AbstractController
         }
         // at this point the form has posted and were ready to kick this off
         $now = new \DateTime();
-        // set the time zone to central this will need replaced by a setting from the settings table
-        //$now->setTimezone(new \DateTimeZone('America/Chicago'));
         // time format is 02/13/1975
-        $now->format($this->appSettings->timeFormat);
+        $timeStamp = $now->format($this->appSettings->timeFormat);
         
-        $filter = new Filter();
         // get  the valid data from the form, we need to add to it before user is saved
         $formData = $form->getData();
-        $hash = new Filter($formData['email'], $now);
+        $hash = new Filter($formData['email'], $timeStamp);
         $hash = $hash->getHash();
+        
         //$user->exchangeArray($form->getData());
-        $user = new User($formData);
-        $user->regDate = $now;
-        $user->regHash = $hash;
-        $this->table->save($user);
-        return $this->redirect()->toRoute('user');
+        $user = new User($this->table->getAdapter());
+        
+        $formData['regDate'] = $timeStamp;
+        $formData['regHash'] = $hash;
+        $formData['firstName'] = 'testFirstName';
+        $user->exchangeArray($formData);
+        //$user->id = 4;
+        var_dump($user);
+        //$user->save();
+        //return $this->redirect()->toRoute('user');
     }
     public function verifyAction()
     {

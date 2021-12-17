@@ -8,10 +8,14 @@ use Laminas\Form\Element\Captcha;
 class UserForm extends Form
 {
 
-    public function __construct($name = null)
+    public function __construct($name = null, array $options = [])
     {
+        if(is_array($options) && !empty($options)) {
+            parent::setOptions($options);
+            //var_dump($options);
+        }
         // We will ignore the name provided to the constructor
-        parent::__construct('User');
+        parent::__construct('RegistrationForm');
         
         $this->add([
             'name' => 'id',
@@ -49,6 +53,7 @@ class UserForm extends Form
                 'label' => 'Confirm Password'
             ]
         ]);
+        if($this->options['enableCaptcha']) {
         $this->add([
             'name' => 'captcha',
             'type' => Element\Captcha::class,
@@ -70,6 +75,7 @@ class UserForm extends Form
                 ]),
             ]
         ]);
+        }
         $this->add([
             'name' => 'submit',
             'type' => 'submit',
@@ -79,4 +85,5 @@ class UserForm extends Form
             ]
         ]);
     }
+
 }

@@ -31,9 +31,10 @@ class Module implements ConfigProviderInterface
                     //$tableGateway = $container->get(Model\UserTableGateway::class);
                     $dbAdapter = $container->get(AdapterInterface::class);
                    // $logger = $container->get('Laminas\Log\Logger');
-                    //$resultSetPrototype = new ResultSet();
-                    //$resultSetPrototype->setArrayObjectPrototype(new Model\User());
-                    return new Model\UserTable('user', $dbAdapter, new RowGatewayFeature('id'));
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\User($dbAdapter));
+                   // return new Model\UserTable('user', $dbAdapter, new RowGatewayFeature('id'));
+                    return new Model\UserTable('user', $dbAdapter, null, $resultSetPrototype);
                 },
 //                 Model\UserTableGateway::class => function ($container) {
 //                     $dbAdapter = $container->get(AdapterInterface::class);

@@ -93,9 +93,12 @@ abstract class AbstractController extends AbstractActionController
         switch ($this->authService->hasIdentity()) {
             case true :
                 $this->authenticated = true;
-                $this->user = new User($table->getCurrentUser($this->authService->getIdentity()));
+                $this->user = $table->getCurrentUser($this->authService->getIdentity());
+                //$this->user->userName = 'testing';
+                //$this->user->save();
+                //var_dump($this->user);
                 break;
-            default:
+            default;
                 $user = new Guest();
                 $this->user = $user;
                 break;
