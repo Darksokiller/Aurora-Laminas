@@ -181,5 +181,121 @@ class FormFilters
         $this->inputFilter = $inputFilter;
         return $this->inputFilter;
     }
+    public function getEditUserFilter()
+    {
+        if ($this->inputFilter) {
+            return $this->inputFilter;
+        }
+        
+        $inputFilter = new InputFilter();
+        
+//         $inputFilter->add([
+//             'name' => 'id',
+//             'required' => true,
+//             'filters' => [
+//                 ['name' => ToInt::class],
+//             ],
+//         ]);
+        
+        $inputFilter->add([
+            'name' => 'userName',
+            'required' => true,
+            'filters' => [
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
+            ],
+            'validators' => [
+                [
+                    'name' => StringLength::class,
+                    'options' => [
+                        'encoding' => 'UTF-8',
+                        'min' => 1,
+                        'max' => 100,
+                    ],
+//                     'name' => NoRecordExists::class,
+//                     'options' => [
+//                         'table' => $this->table->getTable(),
+//                         'field' => 'userName',
+//                         'dbAdapter' => $this->table->getAdapter(),
+//                     ],
+                ],
+                
+            ],
+        ]);
+        
+        $inputFilter->add([
+            'name' => 'email',
+            'required' => true,
+            'filters' => [
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
+            ],
+            'validators' => [
+                [
+                    'name' => StringLength::class,
+                    'options' => [
+                        'encoding' => 'UTF-8',
+                        'min' => 1,
+                        'max' => 100,
+                    ],
+//                     'name' => NoRecordExists::class,
+//                     'options' => [
+//                         'table' => $this->table->getTable(),
+//                         'field' => 'email',
+//                         'dbAdapter' => $this->table->getAdapter(),
+//                     ],
+                ],
+            ],
+        ]);
+        
+//         $inputFilter->add([
+//             'name' => 'password',
+//             'required' => true,
+//             'filters' => [
+//                 ['name' => StripTags::class],
+//                 ['name' => StringTrim::class],
+//                 ['name' => PasswordFilter::class],
+//             ],
+//             'validators' => [
+//                 [
+//                     'name' => StringLength::class,
+//                     'options' => [
+//                         'encoding' => 'UTF-8',
+//                         'min' => 1,
+//                         'max' => 100,
+//                     ],
+//                 ],
+//             ],
+//         ]);
+        
+//         $inputFilter->add([
+//             'name' => 'conf_password',
+//             'required' => true,
+//             'filters' => [
+//                 ['name' => StripTags::class],
+//                 ['name' => StringTrim::class],
+//             ],
+//             'validators' => [
+//                 [
+//                     'name' => StringLength::class,
+//                     'options' => [
+//                         'encoding' => 'UTF-8',
+//                         'min' => 1,
+//                         'max' => 100,
+//                     ],
+//                     'name' => Identical::class,
+//                     'options' => [
+//                         'token' => 'password',
+//                         'messages' => [
+//                             \Laminas\Validator\Identical::NOT_SAME => 'Passwords are not the same',
+//                         ],
+//                     ],
+//                 ],
+//             ],
+//         ]);
+        
+        $this->inputFilter = $inputFilter;
+        return $this->inputFilter;
+    }
 }
 

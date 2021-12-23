@@ -9,10 +9,19 @@ use User\Model\UserTable as Table;
 use User\Model\User as User;
 use User\Model\Guest;
 use Laminas\Log\Logger as Logger;
+use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
 
 abstract class AbstractController extends AbstractActionController
 {
-
+    /**
+     * @property $fm FlashMessenger
+     */
+    public $fm;
+    /**
+     * 
+     * @var $sm \Laminas\ServiceManager\ServiceManager
+     */
+    public $sm;
     public $baseUrl;
     /**
      * 
@@ -27,12 +36,12 @@ abstract class AbstractController extends AbstractActionController
     public $user;
     /**
      * 
-     * @var $logger Laminas\Log\Logger
+     * @var $logger \Laminas\Log\Logger
      */
     public $logger;
     /**
      * 
-     * @var $view Laminas\View\Model\ViewModel
+     * @var $view \Laminas\View\Model\ViewModel
      */
     public $view;
     /**
@@ -42,7 +51,7 @@ abstract class AbstractController extends AbstractActionController
     public $table;
     /**
      * 
-     * @var $acl Laminas\Permission\Acl
+     * @var $acl \Laminas\Permission\Acl
      */
     public $acl;
 
@@ -55,7 +64,7 @@ abstract class AbstractController extends AbstractActionController
     public $config;
     /**
      * 
-     * @var $appSettings Laminas\Config\Config
+     * @var $appSettings \Laminas\Config\Config
      */
     public $appSettings;
     
@@ -66,37 +75,35 @@ abstract class AbstractController extends AbstractActionController
     public function onDispatch(MvcEvent $e)
     {
         // Get an instance of the Service Manager
-        $sm = $e->getApplication()->getServiceManager();
+        $this->sm = $e->getApplication()->getServiceManager();
         // Request Object
-        $request = $sm->get('Request');
+        $request = $this->sm->get('Request');
         // The Referring Url for the current request ie the previous page
         $this->referringUrl = $request->getServer()->get('HTTP_REFERER');
         // The Logger Service
-        $this->logger = $sm->get('Laminas\Log\Logger');
+        $this->logger = $this->sm->get('Laminas\Log\Logger');
         // Not sure why we need this....
         $this->baseUrl = $this->getRequest()->getBasePath();
         // The authentication Object
         $this->authService = new AuthService();
         // This removes the need for more than one db query to make settings available to Aurora
-        $this->appSettings = $sm->get('AuroraSettings');
+        $this->appSettings = $this->sm->get('AuroraSettings');
         // This may be removed in next branch
-        $pluginManager = $sm->get('ControllerPluginManager');
+        $pluginManager = $this->sm->get('ControllerPluginManager');
         //TODO remove this call in next brach
         $fm = $pluginManager->get('FlashMessenger');
         // An instance of User\Model\User
-        $table = $sm->get('User\Model\UserTable');
+        $table = $this->sm->get('User\Model\UserTable');
         // An instance of the Acl Service
-        $this->acl = $sm->get('Acl');
+        $this->acl = $this->sm->get('Acl');
         // The default View Model so that we always have the same object
         $this->view = new ViewModel();
         // Is the User Authenticated?
         switch ($this->authService->hasIdentity()) {
             case true :
                 $this->authenticated = true;
-                $this->user = $table->getCurrentUser($this->authService->getIdentity());
-                //$this->user->userName = 'testing';
-                //$this->user->save();
-                //var_dump($this->user);
+                $this->user = $table->fetchByColumn('email', $this->authService->getIdentity());
+                //var_dump($this->user->toArray());
                 break;
             default;
                 $user = new Guest();
@@ -114,6 +121,7 @@ abstract class AbstractController extends AbstractActionController
         $this->_init();
         return parent::onDispatch($e);
     }
+
     public function _init()
     {
         return $this;

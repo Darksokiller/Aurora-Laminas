@@ -1,27 +1,22 @@
 <?php
 namespace User\Model;
 
-use Application\Model\AbstractModel;
 use RuntimeException;
 use Laminas\Session;
 use User\Model\User as User;
 use User\Model\Profile as Profile;
-use Application\Model\LoggableEntity;
 use Laminas\Db\TableGateway\TableGateway;
-use Laminas\Validator\EmailAddress as emailValidater;
 use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter as AuthAdapter;
 use Laminas\Authentication\AuthenticationService as AuthService;
 use Laminas\Authentication\Result;
 use Laminas\Db\Sql\Select as Select;
-use Application\Permissions\PermissionsManager as Acl;
-use Laminas\Permissions\Acl\ProprietaryInterface;
-use Laminas\Permissions\Acl\Resource\ResourceInterface;
+use Laminas\Db\Metadata\Metadata;
+use Laminas\Db\RowGateway\RowGatewayInterface;
 
 class UserTable extends TableGateway
 {
-
-
-    public function login(User $user)
+    protected $pk = 'id';
+    public function login(RowGatewayInterface $user)
     {
         try {
             $callback = function($hash, $password) {
@@ -43,25 +38,19 @@ class UserTable extends TableGateway
             // Perform the authentication query, saving the result
             $authService = new AuthService();
             $authService->setAdapter($authAdapter);
-            //$result = $authAdapter->authenticate();
             $result = $authService->authenticate();
-            //var_dump($result);
-            
-            //var_dump($result->getMessages());
+            /**
+             * Handle the authentication query result
+             */
             switch ($result->getCode()) {
                 
                 case Result::SUCCESS:
                     //$this->logger->info('User ' . $result->userName . ' logged in.', ['userId' => $result->id, 'userName' => $result->userName]);
                     /** do stuff for successful authentication **/
                     $omitColumns = ['password'];
-                    //$userSession = new Session\Container('user');
-                    //$userSession->details = $authAdapter->getResultRowObject(null, $omitColumns);
-                    //var_dump($authAdapter->getResultRowObject(null, $omitColumns));
                     $user = $authAdapter->getResultRowObject(null, $omitColumns);
-                    //var_dump((array) $user);
                     
-                    //die(__FILE__ . '::' . __LINE__);
-                    return new User(null, $this, (array)$user);
+                    return $this->fetchByColumn('email', $result->getIdentity());
                     break;
                     
                 case Result::FAILURE_IDENTITY_NOT_FOUND:
@@ -77,7 +66,7 @@ class UserTable extends TableGateway
                     return false;
                     break;
             }
-        } catch (Exception $e) {
+        } catch (RuntimeException $e) {
         }
     }
 
@@ -95,7 +84,7 @@ class UserTable extends TableGateway
             throw new RuntimeException(sprintf('Could not find row with column: ' . $column . ' with value: ' . $value));
         }
         
-        return new User($row);
+        return $row;
     }
     public function getHashByEmail($email)
     {
@@ -174,42 +163,39 @@ class UserTable extends TableGateway
         return $row;
     }
     
-    public function save(User $user)
+    protected function filterColumns($data) {
+        if($data instanceof User) {
+            $data = $data->toArray();
+        }
+        $metaData = new Metadata($this->getAdapter());
+        $table = $metaData->getTable($this->table);
+        $columns = $table->getColumns();
+        //var_dump($allowed);
+        $filtered = [];
+        foreach ($columns as $allowed) {
+            $column = $allowed->getName();
+            if(array_key_exists($column, $data)) {
+                $filtered[$column] = $data[$column];
+            }
+        }
+        return $filtered;
+    }
+    public function save($data, $new = true)
     {
-        //var_dump($user);
-        
-       // die(__FILE__);
-        if($user instanceof User)
-        {
-            $data = $user->getArrayCopy();
-        }
-        $data = [
-            'userName' => $user->userName,
-            'email' => $user->email,
-            'password'  => $user->password,
-        ];
-        
-        $id = (int) $user->id;
-        
-        if ($id === 0) {
-            $this->insert($data);
-            $data = new User($data);
-           // parent::save($data);
-            return;
-        }
-        
         try {
-            $data = $this->getUser($id);
+            if($data instanceof User) {
+                $data = $data->toArray();
+                $data = $this->filterColumns($data);
+            }
+            elseif(is_array($data) && !empty($data)) {
+                $data = $this->filterColumns($data);
+            }
+            //var_dump($data);
+            $user = new User($this->pk, $this->table, $this->getAdapter());
+            $user->populate($data);
+            return $user->save();
+            
         } catch (RuntimeException $e) {
-            throw new RuntimeException(sprintf(
-                'Cannot update User with identifier %d; does not exist',
-                $id
-                ));
-        }
-        
-        $result = $this->update($data, ['id' => $id]);
-        if($result > 0) {
-            //$this->logger->notice("$data->firstName $data->lastName updated thier information", ['extra_userId' => $data->id]);
         }
     }
     

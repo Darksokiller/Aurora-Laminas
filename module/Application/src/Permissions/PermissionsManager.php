@@ -35,7 +35,7 @@ class PermissionsManager
         $this->acl->addRole(new Role('superAdmin', 'admin'));
         
         $this->acl->addResource('user');
-        $this->acl->addResource('profile');
+        $this->acl->addResource('user_profile');
         $this->acl->addResource('project');
         $this->acl->addResource('album');
         $this->acl->addResource('admin');
@@ -55,10 +55,10 @@ class PermissionsManager
         
         $this->acl->allow('user', null, ['edit', 'delete'], new Owner());
         $this->acl->allow('user', 'album', 'album.create');
-        $this->acl->allow('user', 'user', 'edit', new Owner());
-        $this->acl->allow('user', 'profile', 'edit', new Owner());
+        //$this->acl->allow('user', 'user', 'edit', new Owner());
+        $this->acl->allow('user', 'user_profile', 'edit', new Owner());
         $this->acl->allow('user', 'project', 'edit', new Owner());
-        $this->acl->allow('admin', 'admin', ['admin.access', 'admin.settings']);
+        $this->acl->allow('admin', 'admin', ['admin.access', 'admin.settings', 'admin.user']);
         $this->acl->allow('admin');
         
         //$this->acl->deny('admin', 'user', ['register', 'login']);

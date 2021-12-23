@@ -37,6 +37,7 @@ class RegisterController extends AbstractController
         $sm = $this->getEvent()->getApplication()->getServiceManager();
         //$this->logger
         $mailer = $sm->get('Application\Utilities\Mailer');
+        //var_dump($mailer);
         //$mailer->setEventManager($events);
         //var_dump($mailer);
        // $logger->info('test message', ['userId' => $this->user->id]);
@@ -76,17 +77,15 @@ class RegisterController extends AbstractController
         $hash = new Filter($formData['email'], $timeStamp);
         $hash = $hash->getHash();
         
-        //$user->exchangeArray($form->getData());
-        $user = new User($this->table->getAdapter());
+        //$user = new User($this->table->getAdapter());
         
         $formData['regDate'] = $timeStamp;
         $formData['regHash'] = $hash;
-        $formData['firstName'] = 'testFirstName';
-        $user->exchangeArray($formData);
-        //$user->id = 4;
-        var_dump($user);
-        //$user->save();
-        //return $this->redirect()->toRoute('user');
+        
+        $result = $this->table->save($formData);
+        if($result > 0) {
+            
+        }
     }
     public function verifyAction()
     {

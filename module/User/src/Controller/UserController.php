@@ -3,29 +3,26 @@ namespace User\Controller;
 
 use \RuntimeException;
 use Application\Controller\AbstractController;
-use Laminas\View\Model\ViewModel;
-use Laminas\Mvc\Controller\Plugin\Layout;
-use Laminas\Log\Logger;
+//use Laminas\View\Model\ViewModel;
 use User\Model\UserTable;
 use User\Model\User;
-use User\Form\UserForm;
+//use User\Form\UserForm;
 use User\Form\LoginForm;
-use Laminas\Mail\Message;
-use Laminas\Mail\Transport\Smtp as SmtpTransport;
-use Laminas\Mail\Transport\SmtpOptions;
-use Laminas\Validator\Db\NoRecordExists as Validator;
-use User\Form\RegistrationForm;
-
-
+use User\Form\EditUserForm;
+use User\Filter\FormFilters;
+use Laminas\Db\RowGateway\RowGatewayInterface;
+use Laminas\Db\TableGateway\TableGateway as Table;
+use Application\Model\RowGateway\ApplicationRowGateway as Prototype;
 
 class UserController extends AbstractController
 {
+
     /**
      * 
      * @var $table UserTable
      */
     public $table;
-    // Add this constructor:
+    
     public function __construct(UserTable $table)
     {
         $this->table = $table;
@@ -33,8 +30,20 @@ class UserController extends AbstractController
     public function _init() {}
     public function indexAction()
     {
-        $this->view->setVariable('users', $this->table->fetchAll());
-        return $this->view;
+        try {
+            $userName = $this->params('userName');
+            $hasMessage = false;
+            if(!empty($userName)) {
+                $this->fm = $this->plugin('flashMessenger');
+                $this->fm->addInfoMessage('User ' . $userName . ' was successfully deleted!!');
+                $hasMessage = true;
+            }
+            $this->view->setVariable('hasMessage', $hasMessage);
+            $this->view->setVariable('users', $this->table->fetchAll());
+            return $this->view;
+        } catch (RuntimeException $e) {
+            
+        }
     }
     public function editAction()
     {
@@ -43,36 +52,45 @@ class UserController extends AbstractController
             $userName = $this->params()->fromRoute('userName');
             // this is the proper fetch for a user, all other calls are to be removed
             $user = $this->table->fetchByColumn('userName', $userName);
+            //if($this->acl->isAllowed())
+            
             // if they can not edit the user there is no point in preceeding
             if( ! $this->acl->isAllowed($this->user, $user, $this->action) ) {
-                $this->flashMessenger()->addWarningMessage('You do not have the required permissions to edit other users');
+                $this->flashMessenger()->addWarningMessage('You do not have the required permissions to edit users');
                 $this->redirect()->toUrl('/forbidden');
             }
             else {
-                // since they can edit lets proceed
-                $form = new UserForm();
+                $options = [];
+                $options['acl'] = $this->acl;
+                $options['settings'] = $this->appSettings;
+                $options['rolesTable'] = $this->sm->get('User\Model\RolesTable');
+                $options['user'] = $this->user;
+                $form = new EditUserForm(null, $options);
                 $form->get('submit')->setAttribute('value', 'Edit');
                 $request = $this->getRequest();
                 // if this is not a post lets return early
-                $viewData['id'] = $user->id;
+                $viewData['userName'] = $user->userName;
                 if (! $request->isPost()) {
                     // bind the queried user data to the form
                     $form->bind($user);
                     // we should only need this when its not post, when form is initially built
                     $viewData['form'] = $form;
-                    return $viewData;
+                    $this->view->setVariables($viewData);
+                    return $this->view;
                 }
-                
+                $filters = new FormFilters();
                 // Set the input filters in the form object
-                $form->setInputFilter($form->getInputFilter());
+                $form->setInputFilter($filters->getEditUserFilter());
                 // Set the posted data in the form so that it can be validated
                 $form->setData($request->getPost());
                 // Validate the posted data via the filters set in the form object
                 // TODO: Fix this, this form object has no filters or validators defined in the form class
                 if (! $form->isValid()) {
                     //return $viewData;
-                    $viewData['form'] = $form;
-                    return $viewData;
+                    //$viewData['form'] = $form;
+                    //return $viewData;
+                    $this->view->form = $form;
+                    return $this->view;
                 }
                 $user->populate($form->getData(), true);
                 
@@ -92,20 +110,38 @@ class UserController extends AbstractController
     
     public function deleteAction()
     {
+        try {
+            $userName = $this->params()->fromRoute('userName');
+            $user = $this->table->fetchByColumn('userName', $userName);
+            $deletedUser = $user->toArray();
+            if($this->acl->isAllowed($this->user, $user, $this->action)) {
+                $result = $user->delete();
+                if($result > 0) {
+                    $this->logger->info('User ' . $this->user->userName . ' deleted user: ' . $deletedUser['userName'], 
+                                        [
+                                            'userId' => $this->user->id, 
+                                            'userName' => $this->user->userName,
+                                            'role' => $this->user->role,
+                                        ]);
+                    $this->redirect()->toRoute('user', ['action' => 'index', 'userName' => $deletedUser['userName']]);
+                }
+                else {
+                    throw new RuntimeException('The requested action could not be completed');
+                }
+            }
+            else {
+                $this->flashMessenger()->addErrorMessage('Forbidden action');
+                $this->redirect()->toRoute('forbidden');
+            }
+        } catch (RuntimeException $e) {
+            
+        }
     }
     public function logoutAction()
     {
-        //var_dump($this->authService->hasIdentity());
-        //var_dump($this->authService->getIdentity());
-       // die(__FILE__ . '::' . __LINE__);
-       // $this->authService->clearIdentity();
-       // $sm = $this->getEvent()->getApplication()->getServiceManager();
-        //$session = $sm->get('Laminas\Session');
-        //var_dump($_SESSION);
         switch ($this->authService->hasIdentity())
         {
             case true :
-                //var_dump($this->authService->getIdentity());
                 $this->authService->clearIdentity();
                 return $this->redirect()->toUrl('/');
                 break;
@@ -127,8 +163,9 @@ class UserController extends AbstractController
         }
         // get the post data
         $post = $request->getPost();
+        $filters = new FormFilters();
         // set the input filters on the form object
-        $form->setInputFilter($form->getLoginFilter());
+        $form->setInputFilter($filters->getLoginFilter());
         // set the posted data in the form objects context
         $form->setData($request->getPost());
         // check with the form object to verify data is valid
@@ -136,10 +173,10 @@ class UserController extends AbstractController
             return ['form' => $form];
         }
         $validData = $form->getData();
-        $user = new User($this->table->getUserByEmail($validData['email']));
+        $user = $this->table->fetchByColumn('email', $validData['email']);
         $user->password = $validData['password'];
         $loginResult = $this->table->login($user);
-        if($loginResult instanceof User)
+        if($loginResult instanceof RowGatewayInterface)
         {
             $this->flashMessenger()->addInfoMessage('Welcome back!!');
             $this->redirect()->toRoute('profile', ['userName' => $loginResult->userName]);

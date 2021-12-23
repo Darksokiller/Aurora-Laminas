@@ -1,19 +1,27 @@
-<?php 
+<?php
+/**
+ * @var $this \Laminas\View\Renderer\PhpRenderer|\Laminas\Form\View\HelperTrait 
+ */
+//$this->
 $this->headLink()->prependStylesheet($this->basePath('css/aurora.css'));
 $title = 'Edit User';
 $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <?php
-$User = $form->get('userName');
-$User->setAttribute('class', 'form-control');
-$User->setAttribute('placeholder', 'User title');
-$User->setAttribute('maxlength', '100');
+
+$name = $form->get('userName');
+$name->setAttribute('class', 'form-control');
+$name->setAttribute('placeholder', 'User title');
+$name->setAttribute('maxlength', '100');
 
 $email = $form->get('email');
 $email->setAttribute('class', 'form-control');
 $email->setAttribute('placeholder', 'Email');
 $email->setAttribute('maxlength', '100');
+
+$role = $form->get('role');
+$role->setAttribute('class', 'form-control');
 
 
 $submit = $form->get('submit');
@@ -21,16 +29,16 @@ $submit->setAttribute('class', 'btn btn-primary');
 
 $form->setAttribute('action', $this->url('user', [
     'action' => 'edit',
-    'id'     => $id,
+    'userName'     => $userName,
 ]));
 $form->prepare();
 
 echo $this->form()->openTag($form);
 ?>
 <div class="form-group">
-    <?= $this->formLabel($User) ?>
-    <?= $this->formElement($User) ?>
-    <?= $this->formElementErrors()->render($User, ['class' => 'help-block']) ?>
+    <?= $this->formLabel($name) ?>
+    <?= $this->formElement($name) ?>
+    <?= $this->formElementErrors()->render($name, ['class' => 'help-block']) ?>
 </div>
 
 <div class="form-group">
@@ -38,7 +46,18 @@ echo $this->form()->openTag($form);
     <?= $this->formElement($email) ?>
     <?= $this->formElementErrors()->render($email, ['class' => 'help-block']) ?>
 </div>
-
+<?php
+//var_dump($this->acl);
+if($acl->isAllowed($this->user, $this->user, 'admin.user')):
+?>
+<div class="form-group">
+	<?= $this->formLabel($role); ?>
+	<?= $this->formElement($role); ?>
+	<?= $this->formElementErrors()->render($role, ['class' => 'help-block']) ?>
+</div>
+<?php
+endif;
+?>
 <?php
 echo $this->formSubmit($submit);
 echo $this->formHidden($form->get('id'));

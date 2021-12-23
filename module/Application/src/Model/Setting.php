@@ -16,4 +16,3 @@ class Setting
         $this->label = !empty($data['label']) ? $data['label'] : null;
     }
 }
-

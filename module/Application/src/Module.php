@@ -159,8 +159,12 @@ class Module
                     $dbAdapter = $container->get(AdapterInterface::class);
                     return new SettingsTable(new TableGateway('settings', $dbAdapter, new RowGatewayFeature('id')));
                 },
+                Utilities\Mailer::class => function($container) {
+                    $settings = $container->get('AuroraSettings');
+                    return new Mailer($settings);
+                },
             ],
+            
         ];
     }
-   
 }

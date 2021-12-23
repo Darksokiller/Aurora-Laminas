@@ -29,7 +29,7 @@ return [
     'Laminas\Diactoros',
     'Laminas\DeveloperTools',
     'Application',
-    'Album',
+    //'Album',
     'User',
     'Project',
 ];

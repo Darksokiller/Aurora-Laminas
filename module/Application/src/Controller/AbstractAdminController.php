@@ -6,7 +6,7 @@ use Laminas\Permissions\Acl\Resource\ResourceInterface;
 
 abstract class AbstractAdminController extends AbstractController implements ResourceInterface
 {
-    protected $resourceId = 'admin';
+    const RESOURCE_ID = 'admin';
     /**
      * {@inheritDoc}
      * @see \Laminas\Permissions\Acl\Resource\ResourceInterface::getResourceId()
@@ -14,18 +14,13 @@ abstract class AbstractAdminController extends AbstractController implements Res
     public function getResourceId()
     {
         // TODO Auto-generated method stub
-        return $this->resourceId;
+        return self::RESOURCE_ID;
     }
 
     public function _init()
     {
-        
-        //parent::_init();
         if(!$this->acl->isAllowed($this->user, $this, 'admin.access'))
         {
-            //$this->logger->emerg('User ')
-            $this->messageType = 'warning';
-           // $this->flashMessenger()->addWarningMessage('You do not have sufficient privileges to access the requested area.');
             $this->redirect()->toRoute('forbidden');
         }
         $adminParent = 'Application\Controller\AbstractAdminController';

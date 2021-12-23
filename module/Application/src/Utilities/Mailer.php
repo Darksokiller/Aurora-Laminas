@@ -1,19 +1,14 @@
 <?php
 namespace Application\Utilities;
 
-use Application\Permissions\PermissionsManager;
+use Laminas\Permissions\Acl\Acl;
 use Application\Model\SettingsTable;
 use User\Model\User as User;
 
 use Laminas\Mail\Message;
 use Laminas\Mail\Transport\Smtp as SmtpTransport;
 use Laminas\Mail\Transport\SmtpOptions;
-
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
-use Laminas\EventManager\EventManager;
-use Laminas\EventManager\EventManagerAwareInterface;
-use Laminas\EventManager\EventManagerInterface;
-use Laminas\EventManager\SharedEventManagerInterface;
 
 /**
  *
@@ -25,24 +20,30 @@ use Laminas\EventManager\SharedEventManagerInterface;
  * @author Joey Smith
  *        
  */
-class Mailer implements ResourceInterface, EventManagerAwareInterface
+class Mailer implements ResourceInterface
 {
+    const RESOURCE_ID = 'mailService';
+    /**
+     * 
+     * @var $acl Acl
+     */
     private $acl;
-    protected $events;
     protected $appSettings;
-    protected $resourceId = 'mailService';
     public $message;
     public $user;
 
     public function __construct()
     {
+        $args = func_get_args();
+        //var_dump($args);
         //var_dump($container);
         // TODO - Insert your code here
     }
-    public function sendMessage($userId = 0, $message, $sendTo)
+    public function sendMessage($email, $hash)
     {
+        
         $message = new Message();
-        $message->addTo($post['email']);
+        $message->addTo($user->email);
         // This email must match the connection_config key in the options below
         $message->addFrom($this->appSettings->smtpSenderAddress);
         $message->setSubject($this->appSettings->siteName . ' account verification');
@@ -66,23 +67,6 @@ class Mailer implements ResourceInterface, EventManagerAwareInterface
         $transport->send($message);
     }
     
-    public function setEventManager(EventManagerInterface $events)
-    {
-        $events->setIdentifiers([
-            __CLASS__,
-            get_class($this),
-        ]);
-        $this->events = $events;
-    }
-    
-    public function getEventManager()
-    {
-        if (! $this->events) {
-            $this->setEventManager(new EventManager());
-        }
-        return $this->events;
-    }
-
     public function getResourceId()
     {
         return $this->resourceId;
