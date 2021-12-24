@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-mvc-plugin-flashmessenger for the canonical source repository
- * @copyright https://github.com/laminas/laminas-mvc-plugin-flashmessenger/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-mvc-plugin-flashmessenger/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Mvc\Plugin\FlashMessenger;
 
 use ArrayIterator;
@@ -15,6 +9,7 @@ use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use Laminas\Session\Container;
 use Laminas\Session\ManagerInterface as Manager;
 use Laminas\Stdlib\SplQueue;
+use ReturnTypeWillChange;
 
 /**
  * Flash Messenger - implement session-based messages
@@ -592,6 +587,7 @@ class FlashMessenger extends AbstractPlugin implements IteratorAggregate, Counta
      *
      * @return ArrayIterator
      */
+    #[ReturnTypeWillChange]
     public function getIterator()
     {
         if ($this->hasMessages()) {
@@ -606,6 +602,7 @@ class FlashMessenger extends AbstractPlugin implements IteratorAggregate, Counta
      *
      * @return int
      */
+    #[ReturnTypeWillChange]
     public function count()
     {
         if ($this->hasMessages()) {

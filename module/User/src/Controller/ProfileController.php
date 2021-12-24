@@ -36,8 +36,8 @@ class ProfileController extends AbstractController
                     'lastName' => ! empty($profileData->lastName) ? $profileData->lastName : null
                 ]);
             }
-            return $this->view->setVariable('data', $profileData);
-
+           $this->view->setVariable('data', $profileData);
+           return $this->view;
         } catch (RuntimeException $e) {
             //$this->logger->err($e->getMessage());
         }

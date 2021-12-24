@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-navigation for the canonical source repository
- * @copyright https://github.com/laminas/laminas-navigation/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-navigation/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Navigation\Service;
 
 use Interop\Container\ContainerInterface;
@@ -92,7 +86,7 @@ abstract class AbstractNavigationFactory implements FactoryInterface
     /**
      * @param ContainerInterface $container
      * @param array|\Laminas\Config\Config $pages
-     * @return null|array
+     * @return array
      * @throws \Laminas\Navigation\Exception\InvalidArgumentException
      */
     protected function preparePages(ContainerInterface $container, $pages)

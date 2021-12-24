@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-log for the canonical source repository
- * @copyright https://github.com/laminas/laminas-log/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-log/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Log\Formatter;
 
 use DateTime;
@@ -232,7 +226,7 @@ class Xml implements FormatterInterface
                 $value = $this->getEscaper()->escapeHtml(
                     '"Object" of type ' . get_class($value) . " does not support __toString() method"
                 );
-            } else {
+            } elseif ($value) {
                 $value = $this->getEscaper()->escapeHtml($value);
             }
 

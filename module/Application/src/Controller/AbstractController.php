@@ -114,6 +114,7 @@ abstract class AbstractController extends AbstractActionController
         $this->layout()->appSettings = $this->appSettings;
         $this->view->user = $this->user;
         $this->view->acl = $this->acl;
+        $this->view->setVariable('acl', $this->acl);
         $this->action = $this->params()->fromRoute('action');
         $this->layout()->acl = $this->acl;
         $this->layout()->user = $this->user;

@@ -13,6 +13,7 @@ use User\Filter\FormFilters;
 use Laminas\Db\RowGateway\RowGatewayInterface;
 use Laminas\Db\TableGateway\TableGateway as Table;
 use Application\Model\RowGateway\ApplicationRowGateway as Prototype;
+use Laminas\View\Model\ViewModel;
 
 class UserController extends AbstractController
 {

@@ -6,6 +6,7 @@ $this->headTitle($title);
 <p>
 	<?= $this->flashMessenger()->render('info'); ?>
 	<?php
+	var_dump($this->acl);
 	if($this->acl->isAllowed($this->user, $data, 'edit')) {
 	?>
     <a class="btn btn-primary" href="<?= $this->url('profile', ['action' => 'edit', 'id' => $this->user->id]) ?>" role="button">Edit Profile</a>
