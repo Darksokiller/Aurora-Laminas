@@ -74,11 +74,6 @@ class Module implements ConfigProviderInterface
                         $container->get(Model\UserTable::class)
                         );
                 },
-                Controller\AjaxController::class => function($container) {
-                    return new Controller\AjaxController(
-                        $container->get(Model\UserTable::class)
-                        );
-                },
                 ],
                 ];
     }

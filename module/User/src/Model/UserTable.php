@@ -42,6 +42,8 @@ class UserTable extends TableGateway
             /**
              * Handle the authentication query result
              */
+            //var_dump($result->getMessages());
+           // die(__FILE__);
             switch ($result->getCode()) {
                 
                 case Result::SUCCESS:
@@ -55,6 +57,7 @@ class UserTable extends TableGateway
                     
                 case Result::FAILURE_IDENTITY_NOT_FOUND:
                     /** do stuff for nonexistent identity **/
+                    return $result;
                     break;
                     
                 case Result::FAILURE_CREDENTIAL_INVALID:

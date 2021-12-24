@@ -29,7 +29,7 @@ return [
                     'route' => '/user/profile[/:action[/:userName]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'userName'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'userName' => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ],
                     'defaults' => [
                         'controller' => Controller\ProfileController::class,
@@ -79,20 +79,12 @@ return [
                     ],
                 ],
             ],
-//             'user.ajax' => [
-//                 'type'    => Segment::class,
-//                 'options' => [
-//                     'route' => '/user/ajax[/:action[/:id]]',
-//                     'constraints' => [
-//                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-//                         'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-//                     ],
-//                     'defaults' => [
-//                         'controller' => Controller\AjaxController::class,
-//                         'action'     => 'index',
-//                     ],
-//                 ],
-//             ],
+            
+        ],
+    ],
+    'controllers' => [
+        'factories' => [
+            Controller\ErrorController::class => InvokableFactory::class,
         ],
     ],
     'navigation' => [

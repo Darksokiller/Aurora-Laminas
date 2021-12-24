@@ -13,6 +13,7 @@ use User\Filter\FormFilters;
 use Laminas\Db\RowGateway\RowGatewayInterface;
 use Laminas\Db\TableGateway\TableGateway as Table;
 use Application\Model\RowGateway\ApplicationRowGateway as Prototype;
+use Laminas\Authentication\Result;
 
 class UserController extends AbstractController
 {
@@ -182,11 +183,24 @@ class UserController extends AbstractController
             $this->redirect()->toRoute('profile', ['userName' => $loginResult->userName]);
         }
         else {
-            return $this->redirect()->toUrl('/user/login-failure');
+            $messages = $loginResult->getMessages();
+            if($loginResult->getCode() === Result::FAILURE_IDENTITY_NOT_FOUND) {
+                $messages[] = 'If you are certain you have registered you may need to verify your account before you can login';
+            }
+            $email = $form->get('email');
+            $email->setMessages($messages);
+            $this->view->setVariable('form', $form);
+            return $this->view;
         }
     }
     public function loginFailureAction()
     {
-        return new ViewModel(['messages' => 'failed login']);
+        $code = $this->params('code');
+        $message = $this->params('message');
+        $this->view->setVariables(['code' => $code, 'message' => $message]);
+        return $this->view;
+        //return new ViewModel(['messages' => 'failed login']);
+        die(__FILE__);
     }
+
 }
