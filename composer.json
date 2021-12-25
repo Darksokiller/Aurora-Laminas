@@ -84,5 +84,12 @@
 	"require-dev" : {
 		"laminas/laminas-test" : "^3.4.2",
 		"laminas/laminas-developer-tools" : "^2.1"
+	},
+	"config": {
+		"allow-plugins": {
+			"composer/package-versions-deprecated": true,
+			"laminas/laminas-component-installer": true,
+			"laminas/laminas-skeleton-installer": true
+		}
 	}
 }
