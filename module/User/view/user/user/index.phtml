@@ -3,18 +3,7 @@ $title = 'System Users';
 $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
-<?php
-if($hasMessage) :
-?>
-<div class="alert alert-warning alert-dismissible fade show" role="alert">
-   <?=$this->flashMessenger()->renderCurrent('info'); ?>
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<?php
-endif;
-?>
+
 <p>
 	<?php
 	if($this->acl->isAllowed($this->user, $this->user, 'user.create.new')):

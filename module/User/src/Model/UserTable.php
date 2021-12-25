@@ -178,12 +178,17 @@ class UserTable extends TableGateway
         foreach ($columns as $allowed) {
             $column = $allowed->getName();
             if(array_key_exists($column, $data)) {
+                // filter the incoming array and only allow keys that match existing table columns
                 $filtered[$column] = $data[$column];
+                // we only want to allow null values for the id because that signales a new row
+                if($filtered[$column] !== 'id' && empty($filtered[$column])) {
+                    unset($filtered[$column]);
+                }
             }
         }
         return $filtered;
     }
-    public function save($data, $new = true)
+    public function save($data, $new = false)
     {
         try {
             if($data instanceof User) {
@@ -195,7 +200,7 @@ class UserTable extends TableGateway
             }
             //var_dump($data);
             $user = new User($this->pk, $this->table, $this->getAdapter());
-            $user->populate($data);
+            $user->populate($data, $new);
             return $user->save();
             
         } catch (RuntimeException $e) {

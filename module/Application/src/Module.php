@@ -161,7 +161,8 @@ class Module
                 },
                 Utilities\Mailer::class => function($container) {
                     $settings = $container->get('AuroraSettings');
-                    return new Mailer($settings);
+                    $request = $container->get('request');
+                    return new Mailer($settings, $request);
                 },
             ],
             

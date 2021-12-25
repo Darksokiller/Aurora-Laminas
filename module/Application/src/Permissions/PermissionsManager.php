@@ -3,14 +3,12 @@ namespace Application\Permissions;
 use Laminas\Permissions\Acl\Acl;
 use Laminas\Permissions\Acl\Role\GenericRole as Role;
 use Laminas\Permissions\Acl\Assertion\OwnershipAssertion as Owner;
-/*
- * @var $acl Laminas\Permissions\Acl\Acl
- */
+
 class PermissionsManager
 {
     /**
      * 
-     * @var Acl
+     * @var $acl \Laminas\Permissions\Acl\Acl
      */
     public $acl;
     private $roles = ['superAdmin', 'admin', 'moderator', 'user', 'guest'];
@@ -88,4 +86,3 @@ class PermissionsManager
         $this->acl = $acl;
     }
 }
-

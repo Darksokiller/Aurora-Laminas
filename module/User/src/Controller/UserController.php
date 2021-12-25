@@ -3,10 +3,8 @@ namespace User\Controller;
 
 use \RuntimeException;
 use Application\Controller\AbstractController;
-//use Laminas\View\Model\ViewModel;
 use User\Model\UserTable;
 use User\Model\User;
-//use User\Form\UserForm;
 use User\Form\LoginForm;
 use User\Form\EditUserForm;
 use User\Filter\FormFilters;
@@ -14,10 +12,10 @@ use Laminas\Db\RowGateway\RowGatewayInterface;
 use Laminas\Db\TableGateway\TableGateway as Table;
 use Application\Model\RowGateway\ApplicationRowGateway as Prototype;
 use Laminas\Authentication\Result;
+use Laminas\Validator\Db\NoRecordExists;
 
 class UserController extends AbstractController
 {
-
     /**
      * 
      * @var $table UserTable
@@ -36,7 +34,7 @@ class UserController extends AbstractController
             $hasMessage = false;
             if(!empty($userName)) {
                 $this->fm = $this->plugin('flashMessenger');
-                $this->fm->addInfoMessage('User ' . $userName . ' was successfully deleted!!');
+                $this->fm->addSuccessMessage('User ' . $userName . ' was successfully deleted!!');
                 $hasMessage = true;
             }
             $this->view->setVariable('hasMessage', $hasMessage);
@@ -81,21 +79,20 @@ class UserController extends AbstractController
                 }
                 $filters = new FormFilters();
                 // Set the input filters in the form object
-                $form->setInputFilter($filters->getEditUserFilter());
+                $form->setInputFilter($filters->getEditUserFilter($this->table, $user->id));
                 // Set the posted data in the form so that it can be validated
                 $form->setData($request->getPost());
                 // Validate the posted data via the filters set in the form object
                 // TODO: Fix this, this form object has no filters or validators defined in the form class
                 if (! $form->isValid()) {
-                    //return $viewData;
-                    //$viewData['form'] = $form;
-                    //return $viewData;
                     $this->view->form = $form;
                     return $this->view;
                 }
+                //var_dump($form->getData());
                 $user->populate($form->getData(), true);
                 
                 $result = $user->save();
+                
                 if($result) {
                     // Redirect to User list
                     return $this->redirect()->toRoute('user', ['action' => 'index']);
@@ -103,7 +100,6 @@ class UserController extends AbstractController
                 else {
                     throw new \RuntimeException('The user could not be updated at this time');
                 }
-                
             }
         } catch (RuntimeException $e) {
         }
@@ -193,14 +189,5 @@ class UserController extends AbstractController
             return $this->view;
         }
     }
-    public function loginFailureAction()
-    {
-        $code = $this->params('code');
-        $message = $this->params('message');
-        $this->view->setVariables(['code' => $code, 'message' => $message]);
-        return $this->view;
-        //return new ViewModel(['messages' => 'failed login']);
-        die(__FILE__);
-    }
-
+    public function loginFailureAction() {}
 }
