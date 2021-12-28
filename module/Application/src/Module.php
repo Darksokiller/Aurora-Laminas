@@ -51,6 +51,7 @@ class Module
         $this->BootstrapAcl($e);
         $this->bootstrapSession($e);
         $this->bootstrapLogging($e);
+        $this->boostrapTranslation($e);
     }
     public function bootstrapAcl($e)
     {
@@ -66,6 +67,48 @@ class Module
         $handler = new Config($settings->fetchall());
         $sm->setService('AuroraSettings', $handler);
         date_default_timezone_set($handler->timeZone);
+    }
+    /**
+     * 
+     * @param $e \Laminas\Mvc\MvcEvent
+     */
+    public function boostrapTranslation($e)
+    {
+        // get an instance of the service manager
+        $sm = $e->getApplication()->getServiceManager();
+        /**
+         * 
+         * @var $request \Laminas\Http\PhpEnvironment\Request
+         */
+        $request = $sm->get('request');
+        // get the laguages sent by the client 
+        $string = $request->getServer('HTTP_ACCEPT_LANGUAGE');
+        // this should be delimeter for the first two prefrences set in the browser
+        $needle = ';';
+        // find its position
+        $position = strpos($string, $needle);
+        // return everything before the needle
+        $substring = substr($string, 0, $position);
+        // get an array of locales with the primary at offest 0
+        $locales = explode(',', $substring);        
+        /**
+         * 
+         * @var $translator \Laminas\I18n\Translator\Translator
+         */
+        $translator = $sm->get('MvcTranslator');
+        // set the primary locale as requested by the client
+        $translator->setLocale($locales[0]);
+        // set option two as the fallback
+        $translator->setFallbackLocale([$locales[1]]);
+        /**
+         * 
+         * @var $renderer \Laminas\View\Renderer\PhpRenderer
+         */
+        $renderer = $sm->get('ViewRenderer');
+        // attach the Il8n standard helpers for translation
+        $renderer->getHelperPluginManager()->configure(
+            (new \Laminas\I18n\ConfigProvider())->getViewHelperConfig()
+            );
     }
     /*
      * @var $e Laminas\\Mvc\Event

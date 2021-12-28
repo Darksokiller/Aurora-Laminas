@@ -4,6 +4,7 @@ namespace User;
 use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
+
 return [
     
     // The following section is new and should be added to your file:
@@ -153,6 +154,18 @@ return [
     'view_manager' => [
         'template_path_stack' => [
             'user' => __DIR__ . '/../view',
+        ],
+    ],
+    'language' => [
+        'en' => [
+            'US' => [
+                'errors' => [
+                    'login' => [
+                        'FAILURE_IDENTITY_NOT_FOUND' => 'If you are certain you have registered you may need to verify your account before you can login',
+                        'FAILURE_CREDENTIAL_INVALID' => 'The supplied password was invalid',
+                    ],
+                ],
+            ],
         ],
     ],
 ];

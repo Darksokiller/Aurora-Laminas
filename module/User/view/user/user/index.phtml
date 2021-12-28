@@ -8,7 +8,7 @@ $this->headTitle($title);
 	<?php
 	if($this->acl->isAllowed($this->user, $this->user, 'user.create.new')):
 	?>
-    <span><a href="<?= $this->url('user.register', ['action' => 'add', 'id' => 0]) ?>" class="btn btn-outline-info btn-sm">Add User</a></span>
+    <span><a href="<?= $this->url('user.register', ['id' => 0]) ?>" class="btn btn-outline-info btn-sm">Add User</a></span>
     <?php 
     endif;
     ?>

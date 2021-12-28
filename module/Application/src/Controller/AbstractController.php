@@ -90,8 +90,7 @@ abstract class AbstractController extends AbstractActionController
         $this->appSettings = $this->sm->get('AuroraSettings');
         // This may be removed in next branch
         $pluginManager = $this->sm->get('ControllerPluginManager');
-        //TODO remove this call in next brach
-        $fm = $pluginManager->get('FlashMessenger');
+        $this->config = $this->sm->get('config');
         // An instance of User\Model\User
         $table = $this->sm->get('User\Model\UserTable');
         // An instance of the Acl Service

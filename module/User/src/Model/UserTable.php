@@ -62,6 +62,7 @@ class UserTable extends TableGateway
                     
                 case Result::FAILURE_CREDENTIAL_INVALID:
                     /** do stuff for invalid credential **/
+                    return $result;
                     break;
                     
                 default:
@@ -181,9 +182,9 @@ class UserTable extends TableGateway
                 // filter the incoming array and only allow keys that match existing table columns
                 $filtered[$column] = $data[$column];
                 // we only want to allow null values for the id because that signales a new row
-                if($filtered[$column] !== 'id' && empty($filtered[$column])) {
-                    unset($filtered[$column]);
-                }
+//                 if($filtered[$column] !== 'id' && empty($filtered[$column])) {
+//                     unset($filtered[$column]);
+//                 }
             }
         }
         return $filtered;
@@ -201,7 +202,10 @@ class UserTable extends TableGateway
             //var_dump($data);
             $user = new User($this->pk, $this->table, $this->getAdapter());
             $user->populate($data, $new);
-            return $user->save();
+            //var_dump($user);
+            $result = $user->save();
+            var_dump($result);
+            return $result;
             
         } catch (RuntimeException $e) {
         }

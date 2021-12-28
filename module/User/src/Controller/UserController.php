@@ -89,9 +89,11 @@ class UserController extends AbstractController
                     return $this->view;
                 }
                 //var_dump($form->getData());
-                $user->populate($form->getData(), true);
+                //$user->populate($form->getData(), true);
                 
-                $result = $user->save();
+                //$result = $user->save();
+                $result = $this->table->save($form->getData(), true);
+                
                 
                 if($result) {
                     // Redirect to User list
@@ -152,6 +154,7 @@ class UserController extends AbstractController
     }
     public function loginAction()
     {
+        //var_dump($this->sm);
         $form = new LoginForm();
         $form->get('submit')->setValue('Login');
         $request = $this->getRequest();
@@ -171,20 +174,28 @@ class UserController extends AbstractController
         }
         $validData = $form->getData();
         $user = $this->table->fetchByColumn('email', $validData['email']);
+        /** DO NOT change the following line as the password property must be set to the posted password!!!!
+         * if changed login fails
+         */
         $user->password = $validData['password'];
         $loginResult = $this->table->login($user);
-        if($loginResult instanceof RowGatewayInterface)
-        {
+        if($loginResult instanceof RowGatewayInterface) {
             $this->flashMessenger()->addInfoMessage('Welcome back!!');
             $this->redirect()->toRoute('profile', ['userName' => $loginResult->userName]);
         }
         else {
             $messages = $loginResult->getMessages();
-            if($loginResult->getCode() === Result::FAILURE_IDENTITY_NOT_FOUND) {
-                $messages[] = 'If you are certain you have registered you may need to verify your account before you can login';
+            switch($loginResult->getCode()) {
+                case Result::FAILURE_IDENTITY_NOT_FOUND :
+                    $email = $form->get('email');
+                    $messages[] = 'If you are certain you have registered you may need to verify your account before you can login';
+                    $email->setMessages($messages);
+                    break;
+                case Result::FAILURE_CREDENTIAL_INVALID :
+                    $credential = $form->get('password');
+                    $credential->setMessages($messages);
+                    break;
             }
-            $email = $form->get('email');
-            $email->setMessages($messages);
             $this->view->setVariable('form', $form);
             return $this->view;
         }
