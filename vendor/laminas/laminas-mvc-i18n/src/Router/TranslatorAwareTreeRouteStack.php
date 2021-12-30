@@ -63,7 +63,6 @@ class TranslatorAwareTreeRouteStack extends TreeRouteStack implements Translator
         if (isset($flatOptions['translator_text_domain'])) {
             $instance->setTranslatorTextDomain($flatOptions['translator_text_domain']);
         }
-
         return $instance;
     }
 

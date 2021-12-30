@@ -13,6 +13,7 @@ use Laminas\Mvc\I18n\Router\TranslatorAwareTreeRouteStack;
 
 return [
     'router' => [
+        'router_class' => TranslatorAwareTreeRouteStack::class,
         'routes' => [
             'home' => [
                 'type'    => Literal::class,

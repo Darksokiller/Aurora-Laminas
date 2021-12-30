@@ -49,7 +49,6 @@ class TranslatorAwareTreeRouteStack extends TreeRouteStack implements Translator
         if ($this->hasTranslator() && $this->isTranslatorEnabled() && ! isset($options['translator'])) {
             $options['translator'] = $this->getTranslator();
         }
-
         if (! isset($options['text_domain'])) {
             $options['text_domain'] = $this->getTranslatorTextDomain();
         }

@@ -12,6 +12,7 @@ return [
     'Logout' => 'Cerrar sesion',
     'Admin' => 'Administrador',
     'Users' => 'Usuarios',
+    'user' => 'usuario',
     // Form fields, buttons, placeholders
     'Password' => 'Contrasena',
     'Email' => 'Correo electronico',

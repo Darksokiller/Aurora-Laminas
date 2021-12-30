@@ -14,6 +14,8 @@ use User\Model\ProfileTable;
 use User\Model\RolesTable;
 use Application\Event\LogEvents;
 use Application\Model\RowGateway\ApplicationRowGateway;
+use Laminas\Permissions\Acl\Acl;
+use User\Permissions\PermissionsManager;
 
 
 
@@ -23,7 +25,16 @@ class Module implements ConfigProviderInterface
     {
         return include __DIR__ . '/../config/module.config.php';
     }
-    public function onBootstrap($e) {}
+    public function onBootstrap($e) {
+        $this->bootstrapAcl($e);
+    }
+    public function bootstrapAcl($e)
+    {
+        $acl = new PermissionsManager(new Acl());
+        $acl = $acl->getAcl();
+        $sm = $e->getApplication()->getServiceManager();
+        $sm->setService('Acl', $acl);
+    }
     public function getServiceConfig()
     {
        

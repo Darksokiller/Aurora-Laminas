@@ -5,36 +5,34 @@ declare(strict_types=1);
 namespace Application;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Adapter\Adapter as dbAdapter;
-use Laminas\ServiceManager\Factory\InvokableFactory;
+//use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Session;
-use Laminas\View\HelperPluginManager;
-use Laminas\Mvc\ModuleRouteListener;
+//use Laminas\View\HelperPluginManager;
+//use Laminas\Mvc\ModuleRouteListener;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Session\SessionManager;
 use Laminas\Session\Config\SessionConfig;
 use Laminas\Session\Container;
 use Laminas\Session\Validator;
-use Laminas\Permissions\Acl\Acl;
-use Application\Permissions\PermissionsManager;
 use Application\Model\SettingsTable;
 use Laminas\Mvc\Application;
 use Laminas\Db\TableGateway\TableGateway;
-use Laminas\Db\RowGateway\Feature\FeatureSet;
-use Laminas\Db\ResultSet\ResultSet;
-use Application\Model\Setting;
+//use Laminas\Db\RowGateway\Feature\FeatureSet;
+//use Laminas\Db\ResultSet\ResultSet;
+//use Application\Model\Setting;
 use Laminas\Db\TableGateway\Feature\RowGatewayFeature;
 use Application\Utilities\Mailer;
 use Laminas\Log\Logger;
 use Laminas\Log\Filter\Priority;
-use Laminas\Log\LoggerAbstractServiceFactory;
+//use Laminas\Log\LoggerAbstractServiceFactory;
 use Laminas\Log\Writer\Db;
 use Laminas\Log\Writer\FirePhp;
 use Laminas\Log\Formatter\Db as DbFormatter;
-use Laminas\Log\Formatter\Json;
+//use Laminas\Log\Formatter\Json;
 use Laminas\Log\Formatter\FirePhp as FireBugformatter;
-use Laminas\EventManager\SharedEventManager;
-use Laminas\EventManager\Event;
-use Application\Event\LogEvents;
+//use Laminas\EventManager\SharedEventManager;
+//use Laminas\EventManager\Event;
+//use Application\Event\LogEvents;
 use Laminas\Config\Config;
 
 class Module
@@ -48,18 +46,18 @@ class Module
     public function onBootstrap($e)
     {
         $this->bootstrapSettings($e);
-        $this->BootstrapAcl($e);
+        //$this->BootstrapAcl($e);
         $this->bootstrapSession($e);
         $this->bootstrapLogging($e);
         $this->boostrapTranslation($e);
     }
-    public function bootstrapAcl($e)
-    {
-        $acl = new PermissionsManager(new Acl());
-        $acl = $acl->getAcl();
-        $sm = $e->getApplication()->getServiceManager();
-        $sm->setService('Acl', $acl);
-    }
+//     public function bootstrapAcl($e)
+//     {
+//         $acl = new PermissionsManager(new Acl());
+//         $acl = $acl->getAcl();
+//         $sm = $e->getApplication()->getServiceManager();
+//         $sm->setService('Acl', $acl);
+//     }
     public function bootstrapSettings($e)
     {
         $sm = $e->getApplication()->getServiceManager();
@@ -76,6 +74,7 @@ class Module
     {
         // get an instance of the service manager
         $sm = $e->getApplication()->getServiceManager();
+       // var_dump($sm->get('router'));
         /**
          * 
          * @var $request \Laminas\Http\PhpEnvironment\Request
@@ -83,6 +82,7 @@ class Module
         $request = $sm->get('request');
         // get the laguages sent by the client 
         $string = $request->getServer('HTTP_ACCEPT_LANGUAGE');
+        //var_dump($string);
         // this should be delimeter for the first two prefrences set in the browser
         $needle = ';';
         // find its position

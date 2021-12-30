@@ -1,19 +1,19 @@
 <?php
 return [
     // Main navigation
-    'Login' => 'Acceso',
-    'login' => 'acceso',
-    'Register' => 'Registrarse',
-    'register' => 'registrarse',
-    'Home' => 'Casa',
-    'home' => 'casa',
-    'Profile' => 'Perfil',
-    'profile' => 'perfil',
-    'Logout' => 'Cerrar sesion',
-    'Admin' => 'Administrador',
-    'Users' => 'Usuarios',
+    'Login' => '',
+    'login' => '',
+    'Register' => '',
+    'register' => '',
+    'Home' => '',
+    'home' => '',
+    'Profile' => '',
+    'profile' => '',
+    'Logout' => '',
+    'Admin' => '',
+    'Users' => '',
     // Form fields, buttons, placeholders
-    'Password' => 'Contrasena',
-    'Email' => 'Correo electronico',
+    'Password' => '',
+    'Email' => '',
     // Error Messages
 ];
