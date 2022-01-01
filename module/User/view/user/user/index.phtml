@@ -1,9 +1,15 @@
 <?php
+/**
+ * 
+ * @var $roleFilter \User\Filter\RoleFilter
+ */
 $title = 'System Users';
 $this->headTitle($title);
 ?>
 <h1><?= $this->escapeHtml($title) ?></h1>
-
+<?php 
+if(isset($this->user)) :
+?>
 <p>
 	<?php
 	if($this->acl->isAllowed($this->user, $this->user, 'user.create.new')):
@@ -19,9 +25,11 @@ $this->headTitle($title);
 	<th>Profile</th>
     <th>User Name</th>
     <th>Email</th>
+    <th>Role</th>
     <th>Account Status</th>
     <th>Verification Status</th>
     <th>Account Actions</th>
+    
 </tr>
 <?php
 foreach ($users as $listUser) :
@@ -31,6 +39,10 @@ foreach ($users as $listUser) :
     	<td><a href="<?=$this->url('profile', ['action' => 'view', 'userName' => $listUser->userName]); ?>" class="btn btn-outline-info btn-sm">Profile</a></td>
         <td><?= $this->escapeHtml($listUser->userName) ?></td>
         <td><?= $this->escapeHtml($listUser->email) ?></td>
+        <td><?= $this->escapeHtml($roleFilter->filter($listUser->role))?></td>
+        
+        
+        
         <?php
         if ((bool) $listUser->active) :
         ?>
@@ -42,7 +54,6 @@ foreach ($users as $listUser) :
 		<?php
         endif;
         ?>
-		
         <?php
         if ((bool) $listUser->verified) :
         ?>
@@ -67,3 +78,6 @@ foreach ($users as $listUser) :
 	</tr>
 <?php endforeach; ?>
 </table>
+<?php 
+endif;
+?>

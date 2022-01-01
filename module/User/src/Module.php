@@ -16,6 +16,8 @@ use Application\Event\LogEvents;
 use Application\Model\RowGateway\ApplicationRowGateway;
 use Laminas\Permissions\Acl\Acl;
 use User\Permissions\PermissionsManager;
+use Laminas\Config\Processor\Filter;
+use User\Filter\RoleFilter;
 
 
 
@@ -97,6 +99,11 @@ class Module implements ConfigProviderInterface
                         $container->get(Filter\PasswordFilter::class)
                         );
                 },
+                Filter\RoleFilter::class => function($container) {
+                    return new Filter\RoleFilter('our arg value');
+                                        
+                }
+                
                 ],
                 ];
     }
