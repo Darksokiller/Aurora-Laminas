@@ -4,6 +4,7 @@ namespace User;
 use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
+
 return [
     
     // The following section is new and should be added to your file:
@@ -29,7 +30,7 @@ return [
                     'route' => '/user/profile[/:action[/:userName]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'userName'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'userName' => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ],
                     'defaults' => [
                         'controller' => Controller\ProfileController::class,
@@ -79,20 +80,12 @@ return [
                     ],
                 ],
             ],
-//             'user.ajax' => [
-//                 'type'    => Segment::class,
-//                 'options' => [
-//                     'route' => '/user/ajax[/:action[/:id]]',
-//                     'constraints' => [
-//                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-//                         'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-//                     ],
-//                     'defaults' => [
-//                         'controller' => Controller\AjaxController::class,
-//                         'action'     => 'index',
-//                     ],
-//                 ],
-//             ],
+            
+        ],
+    ],
+    'controllers' => [
+        'factories' => [
+            Controller\ErrorController::class => InvokableFactory::class,
         ],
     ],
     'navigation' => [
@@ -161,6 +154,18 @@ return [
     'view_manager' => [
         'template_path_stack' => [
             'user' => __DIR__ . '/../view',
+        ],
+    ],
+    'language' => [
+        'en' => [
+            'US' => [
+                'errors' => [
+                    'login' => [
+                        'FAILURE_IDENTITY_NOT_FOUND' => 'If you are certain you have registered you may need to verify your account before you can login',
+                        'FAILURE_CREDENTIAL_INVALID' => 'The supplied password was invalid',
+                    ],
+                ],
+            ],
         ],
     ],
 ];

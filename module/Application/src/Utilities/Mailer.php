@@ -1,6 +1,8 @@
 <?php
 namespace Application\Utilities;
 
+use Laminas\Config\Config;
+use Laminas\Http\PhpEnvironment\Request;
 use Laminas\Permissions\Acl\Acl;
 use Application\Model\SettingsTable;
 use User\Model\User as User;
@@ -28,27 +30,52 @@ class Mailer implements ResourceInterface
      * @var $acl Acl
      */
     private $acl;
+    /**
+     * 
+     * @var $appSettings \Laminas\Config\Config
+     */
     protected $appSettings;
+    /**
+     * 
+     * @var $request \Laminas\Http\PhpEnvironment\Request
+     */
+    protected $request;
+    /**
+     * 
+     * @var $hostName string|HTTP_HOST
+     */
+    protected $hostName;
+    /**
+     * 
+     * @var $requestScheme string|http https|REQUEST_SCHEME
+     */
+    protected $requestScheme;
     public $message;
     public $user;
 
-    public function __construct()
+    public function __construct(Config $settings = null, Request $request = null)
     {
-        $args = func_get_args();
-        //var_dump($args);
-        //var_dump($container);
-        // TODO - Insert your code here
+        if(!empty($settings)) {
+            $this->appSettings = $settings;
+        }
+        if(!empty($request)) {
+            $this->request = $request;
+            $this->hostName = $this->request->getServer('HTTP_HOST');
+            $this->requestScheme = $this->request->getServer('REQUEST_SCHEME');
+        }
+        //var_dump($this->request->getServer());
+        //var_dump($this->request);
     }
     public function sendMessage($email, $hash)
     {
         
         $message = new Message();
-        $message->addTo($user->email);
+        $message->addTo($email);
         // This email must match the connection_config key in the options below
         $message->addFrom($this->appSettings->smtpSenderAddress);
-        $message->setSubject($this->appSettings->siteName . ' account verification');
+        $message->setSubject($this->appSettings->appName . ' account verification');
         
-        $message->setBody('Please click the link to verify your account ');
+        $message->setBody('Please click <a href="'.$this->requestScheme.'://'. $this->hostName .'/user/verify/'.$hash.'>here</a>"');
         
         $transport = new SmtpTransport();
         

@@ -7,7 +7,10 @@
  * @see https://docs.laminas.dev/tutorials/advanced-config/#environment-specific-system-configuration
  * @see https://docs.laminas.dev/tutorials/advanced-config/#environment-specific-application-configuration
  */
-
+/**
+ *     'router' => [
+        'router_class' => TranslatorAwareTreeRouteStack::class,
+ */
 return [
     // Retrieve list of modules used in this application.
     'modules' => require __DIR__ . '/modules.config.php',
@@ -51,8 +54,6 @@ return [
     'factories' => [
         'Laminas\Session\Config\ConfigInterface' => 'Laminas\Session\Service\SessionConfigFactory',
     ],
-
-
     // Used to create an own service manager. May contain one or more child arrays.
     // 'service_listener_options' => [
     //     [

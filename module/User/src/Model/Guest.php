@@ -18,9 +18,8 @@ class Guest implements RoleInterface
     public function getRoleId()
     {
         // TODO Auto-generated method stub
-        return $this->roleId;
+        return (string)$this->roleId;
     }
-
 
 }
 

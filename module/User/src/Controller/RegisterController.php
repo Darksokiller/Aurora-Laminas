@@ -84,12 +84,13 @@ class RegisterController extends AbstractController
         
         $result = $this->table->save($formData);
         if($result > 0) {
-            
+            $mailer->sendMessage($formData['email'], $hash);
         }
     }
     public function verifyAction()
     {
-        $mailer = $this->getEvent()->getApplication()->getServiceManager()->get('Application\Utilities\Mailer');
+        //$mailer = $this->getEvent()->getApplication()->getServiceManager()->get('Application\Utilities\Mailer');
         $token = $this->params('token');
+        var_dump($token);
     }
 }

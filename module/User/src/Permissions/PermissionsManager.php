@@ -1,21 +1,35 @@
 <?php
-namespace Application\Permissions;
+namespace User\Permissions;
 use Laminas\Permissions\Acl\Acl;
 use Laminas\Permissions\Acl\Role\GenericRole as Role;
 use Laminas\Permissions\Acl\Assertion\OwnershipAssertion as Owner;
-/*
- * @var $acl Laminas\Permissions\Acl\Acl
- */
+use User\Model\RolesTable;
+
 class PermissionsManager
 {
     /**
      * 
-     * @var Acl
+     * @var $acl \Laminas\Permissions\Acl\Acl
      */
     public $acl;
-    private $roles = ['superAdmin', 'admin', 'moderator', 'user', 'guest'];
+    /**
+     * 
+     * @var $table \User\Model\RolesTable
+     */
+    protected $table;
+    /**
+     * 
+     * @var $roles \Laminas\Db\ResultSet\ResultSet
+     */
+    private $roles;
+    /**
+     * 
+     * @var $role \User\Model\
+     */
+    private $role;
     
-    public function __construct(Acl $acl) {
+    public function __construct(Acl $acl, RolesTable $rolesTable = null) {
+        $this->table = $rolesTable ?? null;
         $this->acl = $acl;
         $this->build();
         return $this;
@@ -88,4 +102,3 @@ class PermissionsManager
         $this->acl = $acl;
     }
 }
-

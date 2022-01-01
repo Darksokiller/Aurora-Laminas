@@ -42,6 +42,8 @@ class UserTable extends TableGateway
             /**
              * Handle the authentication query result
              */
+            //var_dump($result->getMessages());
+           // die(__FILE__);
             switch ($result->getCode()) {
                 
                 case Result::SUCCESS:
@@ -55,10 +57,12 @@ class UserTable extends TableGateway
                     
                 case Result::FAILURE_IDENTITY_NOT_FOUND:
                     /** do stuff for nonexistent identity **/
+                    return $result;
                     break;
                     
                 case Result::FAILURE_CREDENTIAL_INVALID:
                     /** do stuff for invalid credential **/
+                    return $result;
                     break;
                     
                 default:
@@ -175,12 +179,17 @@ class UserTable extends TableGateway
         foreach ($columns as $allowed) {
             $column = $allowed->getName();
             if(array_key_exists($column, $data)) {
+                // filter the incoming array and only allow keys that match existing table columns
                 $filtered[$column] = $data[$column];
+                // we only want to allow null values for the id because that signales a new row
+//                 if($filtered[$column] !== 'id' && empty($filtered[$column])) {
+//                     unset($filtered[$column]);
+//                 }
             }
         }
         return $filtered;
     }
-    public function save($data, $new = true)
+    public function save($data, $new = false)
     {
         try {
             if($data instanceof User) {
@@ -192,8 +201,11 @@ class UserTable extends TableGateway
             }
             //var_dump($data);
             $user = new User($this->pk, $this->table, $this->getAdapter());
-            $user->populate($data);
-            return $user->save();
+            $user->populate($data, $new);
+            //var_dump($user);
+            $result = $user->save();
+            var_dump($result);
+            return $result;
             
         } catch (RuntimeException $e) {
         }

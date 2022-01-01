@@ -14,6 +14,10 @@ use User\Model\ProfileTable;
 use User\Model\RolesTable;
 use Application\Event\LogEvents;
 use Application\Model\RowGateway\ApplicationRowGateway;
+use Laminas\Permissions\Acl\Acl;
+use User\Permissions\PermissionsManager;
+use Laminas\Config\Processor\Filter;
+use User\Filter\RoleFilter;
 
 
 
@@ -23,7 +27,16 @@ class Module implements ConfigProviderInterface
     {
         return include __DIR__ . '/../config/module.config.php';
     }
-    public function onBootstrap($e) {}
+    public function onBootstrap($e) {
+        $this->bootstrapAcl($e);
+    }
+    public function bootstrapAcl($e)
+    {
+        $acl = new PermissionsManager(new Acl());
+        $acl = $acl->getAcl();
+        $sm = $e->getApplication()->getServiceManager();
+        $sm->setService('Acl', $acl);
+    }
     public function getServiceConfig()
     {
        
@@ -74,11 +87,6 @@ class Module implements ConfigProviderInterface
                         $container->get(Model\UserTable::class)
                         );
                 },
-                Controller\AjaxController::class => function($container) {
-                    return new Controller\AjaxController(
-                        $container->get(Model\UserTable::class)
-                        );
-                },
                 ],
                 ];
     }
@@ -91,6 +99,11 @@ class Module implements ConfigProviderInterface
                         $container->get(Filter\PasswordFilter::class)
                         );
                 },
+                Filter\RoleFilter::class => function($container) {
+                    return new Filter\RoleFilter('our arg value');
+                                        
+                }
+                
                 ],
                 ];
     }

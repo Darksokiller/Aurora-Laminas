@@ -9,6 +9,7 @@ use Laminas\Router\RouterConfigTrait;
 use Laminas\Router\RouteStackInterface;
 use Laminas\ServiceManager\FactoryInterface;
 use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\Mvc\I18n\Router\TranslatorAwareTreeRouteStack;
 
 /** @psalm-suppress DeprecatedInterface */
 class HttpRouterFactory implements FactoryInterface
