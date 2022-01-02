@@ -100,7 +100,9 @@ class Module implements ConfigProviderInterface
                         );
                 },
                 Filter\RoleFilter::class => function($container) {
-                    return new Filter\RoleFilter('our arg value');
+                    return new Filter\RoleFilter(
+                        $container->get(Filter\RoleFilter::class)
+                        );
                                         
                 }
                 
